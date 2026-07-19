@@ -87,7 +87,93 @@ export const GET_ANIME_BY_ID = `
       studios(isMain: true) { nodes { name } }
       characters { edges { role node { name { full } image { large } } voiceActors(language: JAPANESE, sort: [RELEVANCE]) { name { full } image { large } } } }
       staff { edges { role node { name { full } image { large } } } }
-      recommendations { nodes { mediaRecommendation { title { romaji english } coverImage { large } } } }
+      recommendations {
+        nodes {
+          rating
+          mediaRecommendation {
+            id
+            title { romaji english }
+            bannerImage
+            coverImage { extraLarge }
+            description(asHtml: false)
+            format
+            status
+            season
+            seasonYear
+            episodes
+            duration
+            averageScore
+          }
+        }
+      }
+        relations {
+          nodes {
+            id
+            type
+            title { romaji english }
+            bannerImage
+            coverImage { extraLarge }
+            description(asHtml: false)
+            format
+            status
+            season
+            seasonYear
+            episodes
+            duration
+            averageScore
+          }
+        }
+    }
+  }
+`;
+
+export const BROWSE_ANIME = `
+  query BrowseAnime(
+    $page: Int
+    $perPage: Int
+    $sort: [MediaSort]
+    $genres: [String]
+    $tags: [String]
+    $status: MediaStatus
+    $format: [MediaFormat]
+    $seasonYear: Int
+    $season: MediaSeason
+    $yearGreater: FuzzyDateInt
+    $yearLesser: FuzzyDateInt
+  ) {
+    Page(page: $page, perPage: $perPage) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        hasNextPage
+      }
+      media(
+        type: ANIME
+        isAdult: false
+        sort: $sort
+        genre_in: $genres
+        tag_in: $tags
+        status: $status
+        format_in: $format
+        seasonYear: $seasonYear
+        season: $season
+        startDate_greater: $yearGreater
+        startDate_lesser: $yearLesser
+      ) {
+        id
+        title { romaji english }
+        bannerImage
+        coverImage { extraLarge }
+        description(asHtml: false)
+        format
+        status
+        season
+        seasonYear
+        episodes
+        duration
+        averageScore
+      }
     }
   }
 `;

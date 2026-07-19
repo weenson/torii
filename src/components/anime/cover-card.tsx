@@ -20,7 +20,7 @@ const statusPillClass =
 
     return (
         <div className='flex flex-col gap-2'>
-            <Link href={`/anime/${anime.id}`} className="group relative overflow-hidden h-64 w-48">
+            <Link href={`/anime/${anime.id}`} className="group relative aspect-3/4 w-full overflow-hidden">
                 <img 
                     src={coverImage}
                     alt={title} 

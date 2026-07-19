@@ -1,4 +1,5 @@
 import type { Anime } from "@/types/anime";
+import Link from "next/link";
 import { formatStatusAndType } from "@/lib/anilist/format";
 
 export default function SideAnimeList({ anime }: { anime:Anime }){
@@ -26,6 +27,7 @@ export default function SideAnimeList({ anime }: { anime:Anime }){
         status === 'HIATUS' ? 'bg-secondary' : 'bg-secondary';
 
     return(
+      <Link href={`/anime/${anime.id}`}>
         <div className="group relative overflow-hidden rounded-lg bg-card cursor-pointer">
           <div
             className="absolute inset-0 right-0 w-full overflow-hidden"
@@ -56,5 +58,6 @@ export default function SideAnimeList({ anime }: { anime:Anime }){
           </div>
         </div>
       </div>
+    </Link>
     )
 }

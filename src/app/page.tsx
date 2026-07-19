@@ -1,7 +1,10 @@
 import Button from "@/components/ui/button";
 import Footer from "@/components/layout/footer";
+import { fetchAniList } from "@/lib/anilist/client";
+import { AnimeListType } from "@/types/anime";
 import { ArrowRight, Calendar, TrendingUp, Star, Play, Search, BookOpen, Clock, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { HERO_ANIME_LIST } from "@/lib/anilist/queries";
 
 type FeatureCardProps = {
   title: string;
@@ -9,6 +12,9 @@ type FeatureCardProps = {
   icon: LucideIcon;
   centered?: boolean;
 };
+
+const data = await fetchAniList<AnimeListType>(HERO_ANIME_LIST);
+const image = data.Page.media
 
 function FeatureCard({ title, description, icon: Icon, centered = false }: FeatureCardProps) {
   return (
@@ -83,17 +89,31 @@ export default function Home() {
         <div className="flex flex-col gap-8 md:flex-row mx-auto max-w-6xl">
           <div>
             <p className="text-primary text font-black mb-2">Complete Library</p>
-            <h1 className="text-primary-text text-2xl font-medium md:text-4xl max-w-100 mb-2 text-left">
+            <h1 className="text-primary-text text-2xl font-medium md:text-6xl max-w-100 mb-2 text-left">
               Every <span className="font-bold bg-clip-text text-transparent bg-linear-to-r from-primary to-red-400">genre</span>, every <span className="font-bold bg-clip-text text-transparent bg-linear-to-r from-primary to-red-400">era</span>. All in one place.
             </h1>
             <p className="text-muted-text">
               Whether you're looking for the latest seasonal hits airing right now in Japan, or a nostalgic classic from the 90s, our deep index has you covered. Everything is meticulously organized with rich metadata and instant streaming availability.
             </p>
           </div>
-          <div>
-            <div className="bg-card p-8 rounded-xl border border-border w-full min-h-96">
-              {/* TEMP PLACEHOLDER BEFORE IMAGE IS ADDED */}
-            </div>
+          <div className="relative grid grid-cols-4 overflow-hidden rounded-xl">
+            {image.slice(0, 8).map(
+              (item) =>
+                item.coverImage?.extraLarge && (
+                  <img
+                    key={item.id}
+                    src={item.coverImage.extraLarge}
+                    alt={item.title.english ?? item.title.romaji}
+                    className="aspect-2/3 h-full w-full object-cover"
+                  />
+                ),
+            )}
+            <div
+                className="
+                  pointer-events-none absolute inset-0
+                  bg-[radial-gradient(ellipse_at_center,transparent_45%,var(--color-background)_100%)]
+                "
+              />
           </div>
         </div>
       </section>

@@ -69,7 +69,19 @@ export type Anime = {
         };
       }[];
     } | null;
-    recommendations: { nodes: { mediaRecommendation: { title: { romaji: string, english: string | null }, coverImage: { large: string } } }[] } | null;
+    recommendations: {
+      nodes: {
+        rating: number | null;
+        mediaRecommendation: Anime | null;
+      }[];
+    } | null;
+    relations: {
+        nodes: RelatedMedia[];
+    } | null;
+  };
+
+  type RelatedMedia = Anime & {
+    type: "ANIME" | "MANGA";
   };
   
   export type AnimeListType = {
@@ -81,3 +93,29 @@ export type Anime = {
   export type AnimeByIDType = {
     Media: AnimeByID | null;
   };
+
+  export type BrowseAnimeListType = {
+    Page: {
+      pageInfo: {
+        total: number;
+        perPage: number;
+        currentPage: number;
+        hasNextPage: boolean;
+      };
+      media: Anime[];
+     };
+   };
+
+    export type MediaTag = {
+      name: string;
+      category: string | null;
+      isAdult: boolean | null;
+    };
+
+    export type MediaTagCollectionType = {
+      MediaTagCollection: MediaTag[];
+    };
+
+    export type GenreCollectionType = {
+      GenreCollection: string[];
+    };

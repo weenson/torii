@@ -5,6 +5,7 @@ import type { AnimeByID } from "@/types/anime";
 import StaffTab from "./tabs/staff-tab";
 import CharacterTab from "./tabs/character-tab";
 import EpisodesTab from "./tabs/episodes-tab";
+import RelatedTab from "./tabs/related-tab";
 import {
   formatAverageScore,
   formatDate,
@@ -101,9 +102,10 @@ export default function AnimeDetailBody({ anime }: { anime: AnimeByID }) {
     },
   ];
 
-  type Tab = "trailer" | "staff" | "characters" | "episode";
+  type Tab = "trailer" | "related" | "staff" | "characters" | "episode";
   const tabs: { id: Tab; label: string }[] = [
     { id: "trailer", label: "Trailer" },
+    { id: "related", label: "Related" },
     { id: "staff", label: "Staff" },
     { id: "characters", label: "Characters" },
     { id: "episode", label: "Episodes" },
@@ -117,7 +119,7 @@ export default function AnimeDetailBody({ anime }: { anime: AnimeByID }) {
         <div className="order-2 w-full md:order-1 md:w-auto">
           {anime.nextAiringEpisode && (
             <div className="mb-4 flex items-center justify-between gap-3 rounded-md border border-success bg-success/15 p-3 text-xs font-bold text-success sm:mb-6 sm:p-4 sm:text-sm">
-              <p className="shrink-0">Next Eps</p>
+              <p className="shrink-0">Next Ep</p>
               <p className="truncate text-right">{airingTimeFormatted}</p>
             </div>
           )}
@@ -159,19 +161,16 @@ export default function AnimeDetailBody({ anime }: { anime: AnimeByID }) {
                 <iframe
                   src={`https://www.youtube.com/embed/${anime.trailer.id}`}
                   title="Trailer"
-                  className="aspect-video w-full rounded-lg"
+                  className="aspect-video max-w-6xl mx-auto rounded-lg"
                   allowFullScreen
                 />
               ) : (
                 <p className="text-sm text-muted-text">No trailer available.</p>
               ))}
+            {activeTab === "related" && <RelatedTab relations={anime.relations}/>}
             {activeTab === "staff" && <StaffTab staff={anime.staff} />}
-            {activeTab === "characters" && (
-              <CharacterTab characters={anime.characters} />
-            )}
-            {activeTab === "episode" && (
-              <EpisodesTab streamingEpisodes={anime.streamingEpisodes} />
-            )}
+            {activeTab === "characters" && <CharacterTab characters={anime.characters} /> }
+            {activeTab === "episode" && <EpisodesTab streamingEpisodes={anime.streamingEpisodes} /> }
           </div>
         </div>
       </div>
