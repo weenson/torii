@@ -41,11 +41,13 @@ export default function EpisodesTab({ streamingEpisodes }: { streamingEpisodes: 
         </ul>
       </div>
       <div className="flex justify-center">
+        {hasMoreData && (
           <ShowMoreButton
             showAll={showAll}
-            remaining={streamingEpisodes.length - 15}  
-            onToggle={() => setShowAll((value) => !value)}
-          />
+              remaining={streamingEpisodes.length - 15}  
+              onToggle={() => setShowAll((value) => !value)}
+            />
+          )}
       </div>
     </div>
   );

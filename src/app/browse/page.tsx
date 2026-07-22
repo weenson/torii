@@ -1,10 +1,11 @@
 import Link from "next/link";
 import NavBar from "@/components/ui/navbar";
 import { fetchAniList } from "@/lib/anilist/client";
-import { BROWSE_ANIME } from "@/lib/anilist/queries";
-import type { BrowseAnimeListType } from "@/types/anime";
+import { BROWSE_ANIME, GENRE_COLLECTION } from "@/lib/anilist/queries";
+import type { BrowseAnimeListType, GenreCollectionType } from "@/types/anime";
 import { ChevronLeft, ChevronRight} from "lucide-react"
 import CoverCard from "@/components/anime/cover-card";
+import BrowseFilters from "./browse-filters";
 
 function getPageItems(current: number, total: number): (number | "...")[] {
 
@@ -34,17 +35,41 @@ function getPageItems(current: number, total: number): (number | "...")[] {
   return items;
 }
 
-export default async function BrowsePage({ searchParams }: {searchParams: Promise<{ page?: string }>;}) {
-  const { page: pageParam } = await searchParams;
-  const page = Number(pageParam) || 1;
+type searchParamsType = {
+  page?: string;
+  genres?: string;
+  status?: string;
+  format?: string;
+  season?: string;
+  year?: string;
+  sort?: string;
+}
 
-  const data = await fetchAniList<BrowseAnimeListType>(BROWSE_ANIME, {
-    page,
-    perPage: 36,
-    sort: ["POPULARITY_DESC"],
-  });
+export default async function BrowsePage({ searchParams }: {searchParams: Promise<searchParamsType>;}) {
+  const { page, genres, status, format, season, year, sort } = await searchParams;
+  const pageNum = Number(page) || 1;
+  const genreList = genres?.split(",").filter(Boolean);
+  const formatList = format ? [format] : undefined;
+  const seasonYear = year ? Number(year) : undefined;
+  const sortList = [sort || "POPULARITY_DESC"];
 
-  const { Page: { media, pageInfo } } = data;
+  
+  const [browseData, genreData] = await Promise.all([
+    fetchAniList<BrowseAnimeListType>(BROWSE_ANIME, {
+      page: pageNum,
+      perPage: 36,
+      sort: sortList,
+      genres: genreList,
+      status: status,
+      format: formatList,
+      season,
+      seasonYear
+    }),
+    fetchAniList<GenreCollectionType>(GENRE_COLLECTION)
+  ])
+  
+  const { Page: { media, pageInfo } } = browseData;
+  const genreListData = genreData.GenreCollection;
 
   const currentPage = pageInfo.currentPage;
   const totalPages = Math.max(1, Math.ceil(pageInfo.total / pageInfo.perPage));
@@ -54,7 +79,11 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
     <main className="px-4">
       <NavBar />
 
-      <section className="py-16">
+      <section>
+        <BrowseFilters genres={genreListData} />
+      </section>
+
+      <section className="py-3">
         {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-9 gap-4"> */}
         <div className="grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-4">
           {media.map((item) => (
@@ -67,6 +96,7 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
         {currentPage > 1 && (
           <Link
             href={`/browse?page=${currentPage - 1}`}
+            scroll={false}
             className="rounded px-2 py-1 hover:bg-secondary"
           >
             <ChevronLeft />
@@ -82,10 +112,11 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
             <Link
               key={item}
               href={`/browse?page=${item}`}
-              className={`rounded px-2 py-1 ${
+              scroll={false}
+              className={`rounded-full px-3 py-2 ${
                 item === currentPage
-                  ? "bg-primary font-bold rounded-full px-3 py-1 text-primary-text"
-                  : "hover:bg-secondary rounded-full px-3 py-1"
+                  ? "bg-primary font-bold text-primary-text"
+                  : "hover:bg-secondary"
               }`}
             >
               {item}
@@ -96,7 +127,8 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
         {pageInfo.hasNextPage && (
           <Link
             href={`/browse?page=${currentPage + 1}`}
-            className="rounded px-2 py-1 hover:bg-secondary"
+            scroll={false}
+            className="rounded px-3 py-2 hover:bg-secondary"
           >
             <ChevronRight />
           </Link>

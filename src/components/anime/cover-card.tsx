@@ -24,6 +24,8 @@ const statusPillClass =
                 <img 
                     src={coverImage}
                     alt={title} 
+                    width={100}
+                    height={100}
                     className='w-full h-full object-cover rounded-lg group-hover:scale-110 transition-transform duration-300 ease-out'
                 />
                 <div

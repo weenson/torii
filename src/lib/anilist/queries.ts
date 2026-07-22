@@ -177,3 +177,9 @@ export const BROWSE_ANIME = `
     }
   }
 `;
+
+export const GENRE_COLLECTION = `
+  query {
+    GenreCollection 
+  }
+`;
