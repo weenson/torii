@@ -10,7 +10,7 @@ export default function SearchBar() {
       <input
         type="search"
         name="search"
-        placeholder="Find Anime, Manga, and More..."
+        placeholder="Find Your Favorite Anime..."
         className="h-8 w-120 rounded-lg border border-border bg-background py-3 pr-4 pl-10 text-xs text-primary-text placeholder:text-muted-text outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
       />
     </div>

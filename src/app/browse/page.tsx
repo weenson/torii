@@ -75,6 +75,20 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
   const totalPages = Math.max(1, Math.ceil(pageInfo.total / pageInfo.perPage));
   const items = getPageItems(currentPage, totalPages);
 
+  const filters = new URLSearchParams();
+  if (genres) filters.set("genres", genres)
+  if (status) filters.set("status", status)
+  if (format) filters.set("format", format)
+  if (season) filters.set("season", season)
+  if (year) filters.set("year", year)
+  if (sort) filters.set("sort", sort)
+
+  function browseHref(filters: URLSearchParams, page: number) {
+    const params = new URLSearchParams(filters);
+    params.set("page", String(page));
+    return `/browse?${params.toString()}`;
+  }
+
   return (
     <main className="px-4">
       <NavBar />
@@ -95,9 +109,9 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
       <section className="flex items-center justify-center gap-2 py-8 text-sm text-primary-text">
         {currentPage > 1 && (
           <Link
-            href={`/browse?page=${currentPage - 1}`}
+          href={browseHref(filters, currentPage - 1)}
             scroll={false}
-            className="rounded px-2 py-1 hover:bg-secondary"
+            className="rounded px-3 py-2 hover:bg-secondary"
           >
             <ChevronLeft />
           </Link>
@@ -111,7 +125,7 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
           ) : (
             <Link
               key={item}
-              href={`/browse?page=${item}`}
+              href={browseHref(filters, item)}
               scroll={false}
               className={`rounded-full px-3 py-2 ${
                 item === currentPage
@@ -126,7 +140,7 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
 
         {pageInfo.hasNextPage && (
           <Link
-            href={`/browse?page=${currentPage + 1}`}
+            href={browseHref(filters, currentPage + 1)}
             scroll={false}
             className="rounded px-3 py-2 hover:bg-secondary"
           >

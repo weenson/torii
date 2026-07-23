@@ -19,7 +19,7 @@ const image = data.Page.media
 function FeatureCard({ title, description, icon: Icon, centered = false }: FeatureCardProps) {
   return (
     <div
-      className={`flex flex-col bg-card p-8 rounded-xl border border-border w-full min-h-[200px] ${
+      className={`flex flex-col bg-card p-8 rounded-xl border border-border w-full min-h-50 ${
         centered ? "items-center justify-center text-center" : ""
       }`}
     >
@@ -125,8 +125,6 @@ export default function Home() {
             <Button variant="primary" size="lg">Get Started <ArrowRight /></Button>
           </div>
       </section>
-      
-      <Footer />
     </main>
   );
 }

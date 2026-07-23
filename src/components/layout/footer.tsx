@@ -31,6 +31,8 @@ const footerLinks = [
   },
 ]
 
+const now = new Date().getFullYear();
+
 const Footer = () => {
   return (
     <footer className="bg-background border-t-2 border-border py-12">
@@ -56,7 +58,7 @@ const Footer = () => {
         </div>
 
         <p className="text-muted-text text-center border-t border-border pt-8">
-          © 2026 Torii. Built with ❤️ by {' '}
+          © {now} Torii. Built with ❤️ by {' '}
           <a href="https://github.com/weenson" target="_blank" className="text-primary hover:underline">
             weenson
           </a>
