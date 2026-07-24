@@ -4,11 +4,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { STATUS_OPTIONS, FORMAT_OPTIONS, SORT_OPTIONS, SEASON_OPTIONS, YEAR_OPTIONS } from "@/lib/anilist/filter-opt"
 import BrowseFilterItem from "./browse-filters-select";
 
-type FilterProprs = {
+type FilterProps = {
   genres: string[];
 }
 
-export default function BrowseFilters({genres} : FilterProprs) {
+export default function BrowseFilters({genres} : FilterProps) {
 
   const genreOptions = genres.map((genre) => ({ value: genre, label: genre }));
 

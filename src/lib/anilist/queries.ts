@@ -131,6 +131,7 @@ export const BROWSE_ANIME = `
   query BrowseAnime(
     $page: Int
     $perPage: Int
+    $search: String
     $sort: [MediaSort]
     $genres: [String]
     $tags: [String]
@@ -151,6 +152,7 @@ export const BROWSE_ANIME = `
       media(
         type: ANIME
         isAdult: false
+        search: $search
         sort: $sort
         genre_in: $genres
         tag_in: $tags

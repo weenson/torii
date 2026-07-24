@@ -6,6 +6,7 @@ import type { BrowseAnimeListType, GenreCollectionType } from "@/types/anime";
 import { ChevronLeft, ChevronRight} from "lucide-react"
 import CoverCard from "@/components/anime/cover-card";
 import BrowseFilters from "./browse-filters";
+import SearchFilter from "./search-filter";
 
 function getPageItems(current: number, total: number): (number | "...")[] {
 
@@ -43,21 +44,22 @@ type searchParamsType = {
   season?: string;
   year?: string;
   sort?: string;
+  search?: string;
 }
 
 export default async function BrowsePage({ searchParams }: {searchParams: Promise<searchParamsType>;}) {
-  const { page, genres, status, format, season, year, sort } = await searchParams;
+  const { page, genres, status, format, season, year, sort, search } = await searchParams;
   const pageNum = Number(page) || 1;
   const genreList = genres?.split(",").filter(Boolean);
   const formatList = format ? [format] : undefined;
   const seasonYear = year ? Number(year) : undefined;
   const sortList = [sort || "POPULARITY_DESC"];
-
   
   const [browseData, genreData] = await Promise.all([
     fetchAniList<BrowseAnimeListType>(BROWSE_ANIME, {
       page: pageNum,
       perPage: 36,
+      search,
       sort: sortList,
       genres: genreList,
       status: status,
@@ -82,6 +84,7 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
   if (season) filters.set("season", season)
   if (year) filters.set("year", year)
   if (sort) filters.set("sort", sort)
+  if (search) filters.set("search", search)
 
   function browseHref(filters: URLSearchParams, page: number) {
     const params = new URLSearchParams(filters);
@@ -92,8 +95,8 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
   return (
     <main className="px-4">
       <NavBar />
-
-      <section>
+      <section className="pt-4">
+        <SearchFilter />
         <BrowseFilters genres={genreListData} />
       </section>
 
