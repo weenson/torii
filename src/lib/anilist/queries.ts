@@ -185,3 +185,24 @@ export const GENRE_COLLECTION = `
     GenreCollection 
   }
 `;
+
+export const SEARCH_ANIME = `
+  query ($search: String) {
+    Page(page: 1, perPage: 25) {
+      media(search: $search, type: ANIME, isAdult: false) {
+        id
+        title { romaji english }
+        bannerImage
+        coverImage { extraLarge }
+        description(asHtml: false)
+        format
+        status
+        season
+        seasonYear
+        episodes
+        duration
+        averageScore
+      }
+    }
+  }
+`;

@@ -8,6 +8,7 @@ type AniListResponse<T> = {
 export async function fetchAniList<T>(
     query: string,
     variables?: Record<string, any>,
+    signal?: AbortSignal
 ):Promise<T> {
     const response = await fetch(url, {
         method: 'POST',

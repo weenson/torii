@@ -119,3 +119,9 @@ export type Anime = {
     export type GenreCollectionType = {
       GenreCollection: string[];
     };
+
+    export type SearchAnimeListType = {
+      Page: {
+        media: Anime[];
+      } | null;
+    };
