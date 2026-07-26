@@ -18,6 +18,7 @@ const SearchFilter = () => {
     }
     param.delete("page")
     param.set("page", "1");
+    setSearchTerm('');
     router.push(`${pathname}?${param}`)
   }
 

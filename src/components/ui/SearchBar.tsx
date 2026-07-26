@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { fetchAniList } from "@/lib/anilist/client";
 import { SEARCH_ANIME } from "@/lib/anilist/queries";
@@ -13,6 +13,7 @@ export default function SearchBar() {
   const [suggestions, setSuggestions] = useState<Anime[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const searchBarRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
 
@@ -26,6 +27,7 @@ export default function SearchBar() {
     const controller = new AbortController();
     const timeOutId = setTimeout(async () => {
       setIsLoading(true);
+      setCurrentIndex(0);
       try {
         const data = await fetchAniList<SearchAnimeListType>(
           SEARCH_ANIME,
@@ -35,7 +37,7 @@ export default function SearchBar() {
         setSuggestions(data.Page?.media ?? []);
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") return;
-        throw err;
+        console.error(err);
       } finally{  
         setIsLoading(false);
       }
@@ -66,8 +68,23 @@ export default function SearchBar() {
     }
   }
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchBarRef.current && !searchBarRef.current.contains(event.target as Node)) {
+        setSuggestions([]);
+        setSearchTerm("");
+        setCurrentIndex(0);
+        setIsLoading(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="relative w-full min-w-2xl">
+    <div ref={searchBarRef} className="relative w-full min-w-2xl">
       <Search
         className="pointer-events-none absolute top-1/2 left-3 h-3 w-3 -translate-y-1/2 text-muted-text"
         aria-hidden="true"
@@ -82,7 +99,7 @@ export default function SearchBar() {
       />
 
       {searchTerm.trim() && (isLoading || suggestions.length > 0) && (
-        <ul className="absolute top-full z-50 mt-1 max-h-80 w-full overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+        <ul className="absolute top-full z-50 mt-1 max-h-80 w-full overflow-y-auto rounded-lg border border-border bg-card shadow-lg scrollbar-thin-muted">
           {isLoading ? (
             <li className="px-3 py-3 text-xs text-muted-text">Loading...</li>
           ) : (
@@ -94,13 +111,13 @@ export default function SearchBar() {
                     setSearchTerm("");
                     setSuggestions([]);
                   }}
-                  className={`flex items-center gap-3 px-3 py-2 hover:bg-secondary ${currentIndex === index ? 'bg-secondary' : ''}`}
+                  className={`flex items-center gap-3 px-3 py-3 hover:bg-secondary ${currentIndex === index ? 'bg-secondary' : ''}`}
                 >
                   {anime.coverImage?.extraLarge && (
                     <img
                       src={anime.coverImage.extraLarge}
                       alt=""
-                      className="h-12 w-8 rounded object-cover"
+                      className="h-14 w-10 rounded object-cover"
                     />
                   )}
                   <div className="min-w-0">
