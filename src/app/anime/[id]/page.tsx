@@ -5,9 +5,13 @@ import { GET_ANIME_BY_ID } from "@/lib/anilist/queries";
 import { AnimeByIDType } from "@/types/anime";
 import { notFound } from "next/navigation";
 import CoverCarousel from "@/components/anime/cover-carousel";
-import NavBar from "@/components/ui/navbar";
+import AppNavBar from "@/components/ui/navbar/app-navbar";
 
-export default async function AnimePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function AnimePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const numericID = Number(id);
 
@@ -19,25 +23,25 @@ export default async function AnimePage({ params }: { params: Promise<{ id: stri
   if (!data.Media) notFound();
 
   const anime = data.Media;
-  const recommendations = 
-  anime.recommendations?.nodes
-    .map((item) => item.mediaRecommendation)
-    .filter((item) => item !== null) ?? [];
+  const recommendations =
+    anime.recommendations?.nodes
+      .map((item) => item.mediaRecommendation)
+      .filter((item) => item !== null) ?? [];
 
   return (
     <main className="flex flex-col gap-6">
-        <NavBar overlay />
+      <AppNavBar overlay />
       <section>
         <AnimeDetailHero anime={anime} />
       </section>
-      <section className= "px-4">
+      <section className="px-4">
         <AnimeDetailBody anime={anime} />
       </section>
-    {recommendations.length > 0 && (
-      <section className="px-4">
-        <CoverCarousel title="More like this" anime={recommendations} />
-      </section>
-    )}
+      {recommendations.length > 0 && (
+        <section className="px-4">
+          <CoverCarousel title="More like this" anime={recommendations} />
+        </section>
+      )}
     </main>
   );
 }

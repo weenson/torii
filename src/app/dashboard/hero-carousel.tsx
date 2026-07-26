@@ -11,7 +11,10 @@ const arrowButtonClass =
   "flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/50 text-primary-text backdrop-blur-md transition-colors hover:border-primary/50 hover:bg-primary/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
 
 export default function HeroCarousel({ anime }: { anime: Anime[] }) {
-  const autoplay = useMemo(() => AutoPlay({ delay: 8000, stopOnInteraction: true }), []);
+  const autoplay = useMemo(
+    () => AutoPlay({ delay: 8000, stopOnInteraction: true }),
+    [],
+  );
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [autoplay]);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -20,7 +23,7 @@ export default function HeroCarousel({ anime }: { anime: Anime[] }) {
   const scrollToNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
   const scrollTo = useCallback(
     (index: number) => emblaApi?.scrollTo(index),
-    [emblaApi]
+    [emblaApi],
   );
 
   useEffect(() => {

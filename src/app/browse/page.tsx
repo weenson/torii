@@ -1,15 +1,14 @@
 import Link from "next/link";
-import NavBar from "@/components/ui/navbar";
+import AppNavBar from "@/components/ui/navbar/app-navbar";
 import { fetchAniList } from "@/lib/anilist/client";
 import { BROWSE_ANIME, GENRE_COLLECTION } from "@/lib/anilist/queries";
 import type { BrowseAnimeListType, GenreCollectionType } from "@/types/anime";
-import { ChevronLeft, ChevronRight} from "lucide-react"
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import CoverCard from "@/components/anime/cover-card";
 import BrowseFilters from "./browse-filters";
 import SearchFilter from "./search-filter";
 
 function getPageItems(current: number, total: number): (number | "...")[] {
-
   const pages = new Set<number>();
   pages.add(1);
   pages.add(total);
@@ -45,16 +44,21 @@ type searchParamsType = {
   year?: string;
   sort?: string;
   search?: string;
-}
+};
 
-export default async function BrowsePage({ searchParams }: {searchParams: Promise<searchParamsType>;}) {
-  const { page, genres, status, format, season, year, sort, search } = await searchParams;
+export default async function BrowsePage({
+  searchParams,
+}: {
+  searchParams: Promise<searchParamsType>;
+}) {
+  const { page, genres, status, format, season, year, sort, search } =
+    await searchParams;
   const pageNum = Number(page) || 1;
   const genreList = genres?.split(",").filter(Boolean);
   const formatList = format ? [format] : undefined;
   const seasonYear = year ? Number(year) : undefined;
   const sortList = [sort || "POPULARITY_DESC"];
-  
+
   const [browseData, genreData] = await Promise.all([
     fetchAniList<BrowseAnimeListType>(BROWSE_ANIME, {
       page: pageNum,
@@ -65,12 +69,14 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
       status: status,
       format: formatList,
       season,
-      seasonYear
+      seasonYear,
     }),
-    fetchAniList<GenreCollectionType>(GENRE_COLLECTION)
-  ])
-  
-  const { Page: { media, pageInfo } } = browseData;
+    fetchAniList<GenreCollectionType>(GENRE_COLLECTION),
+  ]);
+
+  const {
+    Page: { media, pageInfo },
+  } = browseData;
   const genreListData = genreData.GenreCollection;
 
   const currentPage = pageInfo.currentPage;
@@ -78,13 +84,13 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
   const items = getPageItems(currentPage, totalPages);
 
   const filters = new URLSearchParams();
-  if (genres) filters.set("genres", genres)
-  if (status) filters.set("status", status)
-  if (format) filters.set("format", format)
-  if (season) filters.set("season", season)
-  if (year) filters.set("year", year)
-  if (sort) filters.set("sort", sort)
-  if (search) filters.set("search", search)
+  if (genres) filters.set("genres", genres);
+  if (status) filters.set("status", status);
+  if (format) filters.set("format", format);
+  if (season) filters.set("season", season);
+  if (year) filters.set("year", year);
+  if (sort) filters.set("sort", sort);
+  if (search) filters.set("search", search);
 
   function browseHref(filters: URLSearchParams, page: number) {
     const params = new URLSearchParams(filters);
@@ -94,7 +100,7 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
 
   return (
     <main className="px-4">
-      <NavBar />
+      <AppNavBar />
       <section className="pt-4">
         <SearchFilter />
         <BrowseFilters genres={genreListData} />
@@ -112,7 +118,7 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
       <section className="flex items-center justify-center gap-2 py-8 text-sm text-primary-text">
         {currentPage > 1 && (
           <Link
-          href={browseHref(filters, currentPage - 1)}
+            href={browseHref(filters, currentPage - 1)}
             scroll={false}
             className="rounded px-3 py-2 hover:bg-secondary"
           >
@@ -138,7 +144,7 @@ export default async function BrowsePage({ searchParams }: {searchParams: Promis
             >
               {item}
             </Link>
-          )
+          ),
         )}
 
         {pageInfo.hasNextPage && (

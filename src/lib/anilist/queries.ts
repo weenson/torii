@@ -206,3 +206,13 @@ export const SEARCH_ANIME = `
     }
   }
 `;
+
+export const USER_INFO = `
+  query {
+    Viewer {
+      id
+      name
+      avatar { medium }
+    }
+  }
+`;
