@@ -31,6 +31,7 @@ export default function AnimeDetailBody({ anime }: { anime: AnimeByID }) {
 
   useEffect(() => {
     if (airingAt === null) return;
+    setCurrentTime(calcTime());
 
     const id = setInterval(() => {
       setCurrentTime(calcTime());
@@ -127,7 +128,9 @@ export default function AnimeDetailBody({ anime }: { anime: AnimeByID }) {
             <ul className="grid grid-cols-2 gap-4 md:grid-cols-1">
               {infoPanel.map((item) => (
                 <li key={item.title} className="min-w-0">
-                  <p className="text-xs text-muted-text sm:text-sm">{item.title}</p>
+                  <p className="text-xs text-muted-text sm:text-sm">
+                    {item.title}
+                  </p>
                   <p className="wrap-break-word text-xs font-medium sm:text-sm">
                     {item.value}
                   </p>
@@ -167,10 +170,16 @@ export default function AnimeDetailBody({ anime }: { anime: AnimeByID }) {
               ) : (
                 <p className="text-sm text-muted-text">No trailer available.</p>
               ))}
-            {activeTab === "related" && <RelatedTab relations={anime.relations}/>}
+            {activeTab === "related" && (
+              <RelatedTab relations={anime.relations} />
+            )}
             {activeTab === "staff" && <StaffTab staff={anime.staff} />}
-            {activeTab === "characters" && <CharacterTab characters={anime.characters} /> }
-            {activeTab === "episode" && <EpisodesTab streamingEpisodes={anime.streamingEpisodes} /> }
+            {activeTab === "characters" && (
+              <CharacterTab characters={anime.characters} />
+            )}
+            {activeTab === "episode" && (
+              <EpisodesTab streamingEpisodes={anime.streamingEpisodes} />
+            )}
           </div>
         </div>
       </div>

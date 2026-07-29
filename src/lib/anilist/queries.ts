@@ -216,3 +216,75 @@ export const USER_INFO = `
     }
   }
 `;
+
+export const PROFILE_INFO = `
+  query ($userName: String) {
+    User(name: $userName) {
+      id
+      name
+      avatar { large }
+      bannerImage
+      createdAt
+      statistics {
+        anime {
+          count
+          meanScore
+          standardDeviation
+          minutesWatched
+          episodesWatched
+        }
+      }
+    }
+  }
+`;
+
+export const USER_ANIME_LIST = `
+  query ($userName: String) {
+  MediaListCollection(userName: $userName, type: ANIME) {
+    lists {
+      name
+      isCustomList
+      status
+      entries {
+        id
+        status
+        score
+        progress
+        media {
+          id
+          title { romaji english }
+          coverImage { extraLarge }
+          format
+          status
+          season
+          seasonYear
+          episodes
+          duration
+          averageScore
+        }
+      }
+    }
+  }
+}
+`;
+
+export const FOLLOWING_USERS = `
+  query ($userId: Int!) {
+    followingPage: Page(page: 1, perPage: 1) {
+      pageInfo {
+        total
+      }
+      following: following(userId: $userId) {
+        id
+      }
+    }
+    followersPage: Page(page: 1, perPage: 1) {
+      pageInfo {
+        total
+      }
+      followers: followers(userId: $userId) {
+        id
+      }
+    }
+  }
+`;

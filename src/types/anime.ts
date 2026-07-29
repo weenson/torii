@@ -174,3 +174,48 @@ export type UserInfoType = {
     avatar: { medium: string };
   };
 };
+
+export type ProfileInfoType = {
+  User: {
+    id: number;
+    name: string;
+    avatar: { large: string };
+    bannerImage: string;
+    createdAt: number;
+    statistics: {
+      anime: {
+        count: number;
+        minutesWatched: number;
+        episodesWatched: number;
+      };
+    };
+  };
+};
+
+export type UserAnimeListType = {
+  MediaListCollection: {
+    lists: {
+      name: string;
+      isCustomList: boolean;
+      status: string;
+      entries: {
+        id: number;
+        status: string;
+        score: number;
+        progress: number;
+        media: Anime;
+      }[];
+    }[];
+  };
+};
+
+type PageType = {
+  pageInfo: {
+    total: number;
+  };
+};
+
+export type FollowUsersType = {
+  followingPage: PageType;
+  followersPage: PageType;
+};

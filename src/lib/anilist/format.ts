@@ -43,18 +43,32 @@ export function getCurrentSeason(): { season: AnimeSeason; year: number } {
   return { season, year };
 }
 
-export function formatDate(date: { year: number | null, month: number | null, day: number | null }): string {
+export function formatDate(date: {
+  year: number | null;
+  month: number | null;
+  day: number | null;
+}): string {
   if (!date.year || !date.month || !date.day) return "N/A";
   const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
   const month = monthNames[date.month - 1];
-  const day = date.day.toString().padStart(2, '0');
+  const day = date.day.toString().padStart(2, "0");
   return `${month} ${day}, ${date.year}`;
 }
 
-export function formatTime(second: number){
+export function formatTime(second: number) {
   const hours = Math.floor(second / 3600);
   const minutes = Math.floor((second % 3600) / 60);
   const seconds = second % 60;
@@ -72,4 +86,27 @@ export function formatTime(second: number){
   } else {
     return `${seconds}s`;
   }
+}
+
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+export function formatDateToMMDDYY(date: number) {
+  const dateObj = new Date(date * 1000);
+  const month = MONTH_NAMES[dateObj.getMonth()];
+  const day = dateObj.getDate();
+  const year = dateObj.getFullYear();
+  return `${month} ${day}, ${year}`;
 }
