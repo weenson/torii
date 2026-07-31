@@ -33,7 +33,7 @@ export default function RootLayout({
         <section>
           <Footer />
         </section>
-        </body>
+      </body>
     </html>
   );
 }

@@ -1,6 +1,11 @@
 import type { Anime } from "@/types/anime";
-import { cleanDescription, formatStatusAndType, formatSeason, formatAverageScore } from "@/lib/anilist/format";
-import {Clock, Calendar, Tv, Star, Play, Info} from 'lucide-react'
+import {
+  cleanDescription,
+  formatStatusAndType,
+  formatSeason,
+  formatAverageScore,
+} from "@/lib/anilist/format";
+import { Clock, Calendar, Tv, Star, Play, Info } from "lucide-react";
 import Link from "next/link";
 import Badge from "@/components/ui/badge";
 import Button from "@/components/ui/button";
@@ -22,7 +27,7 @@ export default function HeroBanner({ anime }: { anime: Anime }) {
       />
       <div className="absolute inset-0 bg-background/30" />
       <div className="absolute inset-0 bg-linear-to-t from-background via-background/70 to-transparent" />
-      <div className="absolute bottom-0 left-0 p-6 md:p-10 flex flex-col gap-3">
+      <div className="absolute bottom-0 p-6 md:p-10 flex flex-col gap-3">
         <div>
           <Badge variant="outline">{status}</Badge>
         </div>
@@ -31,12 +36,32 @@ export default function HeroBanner({ anime }: { anime: Anime }) {
             {title}
           </span>
         </h2>
-          <ul className="flex flex-row gap-x-7 text-primary-text">
-            <li><Badge variant="outline"><Tv className="w-4 h-4 mr-2" />{type}</Badge></li>
-            <li><Badge variant="outline"><Calendar className="w-4 h-4 mr-2" />{season}</Badge></li>
-            <li><Badge variant="outline"><Clock className="w-4 h-4 mr-2" />{duration} mins</Badge></li>
-            <li><Badge variant="outline"><Star className="w-4 h-4 mr-2" />{averageScore}</Badge></li>
-          </ul>
+        <ul className="flex flex-row gap-x-7 text-primary-text">
+          <li>
+            <Badge variant="outline">
+              <Tv className="w-4 h-4 mr-2" />
+              {type}
+            </Badge>
+          </li>
+          <li>
+            <Badge variant="outline">
+              <Calendar className="w-4 h-4 mr-2" />
+              {season}
+            </Badge>
+          </li>
+          <li>
+            <Badge variant="outline">
+              <Clock className="w-4 h-4 mr-2" />
+              {duration} mins
+            </Badge>
+          </li>
+          <li>
+            <Badge variant="outline">
+              <Star className="w-4 h-4 mr-2" />
+              {averageScore}
+            </Badge>
+          </li>
+        </ul>
         <p className="line-clamp-3 text-primary-text max-w-2xl">
           {cleanDescription(anime.description)}
         </p>
@@ -44,15 +69,15 @@ export default function HeroBanner({ anime }: { anime: Anime }) {
           <Button variant="primary" size="lg">
             <Play fill="currentColor" className="w-5 h-5 mr-1" />
             <span className="font-extrabold">WATCH NOW</span>
-        </Button>
-        <Link href={`/anime/${anime.id}`}>
-          <Button variant="secondary" size="lg">
+          </Button>
+          <Link href={`/anime/${anime.id}`}>
+            <Button variant="secondary" size="lg">
               <Info className="w-5 h-5 mr-1" />
               <span className="font-extrabold">MORE INFO</span>
-          </Button>
-        </Link>
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
