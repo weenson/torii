@@ -21,38 +21,58 @@ export default function ProfileHeader({ user, follower }: UserProps) {
         <div className="absolute inset-0 bg-linear-to-t from-background via-background/70 to-background/20" />
       </div>
       <div className="relative -mt-24 mx-4">
-        <div className="flex flex-row gap-4 items-center text-primary-text">
-          <Image
-            src={user.avatar.large}
-            alt=""
-            width={240}
-            height={360}
-            className="rounded-full h-48 w-48"
-          />
-          <div className="flex flex-col gap-2">
-            <h2 className="font-bold text-3xl">{user.name}</h2>
-            <p className="text-sm text-muted-text">
-              <span className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                Joined on{" "}
+        <div className="flex flex-col gap-6 text-primary-text md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-4">
+            <Image
+              src={user.avatar.large}
+              alt=""
+              width={240}
+              height={360}
+              className="rounded-full h-32 w-32 md:h-48 md:w-48 shrink-0"
+            />
+            <div className="flex flex-col gap-2">
+              <h2 className="font-bold text-2xl md:text-3xl">{user.name}</h2>
+              <p className="text-sm text-muted-text flex items-center gap-1">
+                <Calendar className="w-4 h-4 shrink-0" />
+                Joined
                 <span className="font-bold">
                   {formatDateToMMDDYY(user.createdAt)}
                 </span>
+              </p>
+              <div className="flex gap-3">
+                <p className="text-sm text-muted-text">
+                  <span className="font-bold text-primary-text">
+                    {follower.followersPage.pageInfo.total}
+                  </span>{" "}
+                  Followers
+                </p>
+                <p className="text-sm text-muted-text">
+                  <span className="font-bold text-primary-text">
+                    {follower.followingPage.pageInfo.total}
+                  </span>{" "}
+                  Following
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-6 md:gap-8 justify-center">
+            <div className="flex flex-col items-center text-sm text-muted-text">
+              <span className="font-bold text-2xl md:text-3xl text-primary">
+                {user.statistics.anime.count}
               </span>
-            </p>
-            <div className="flex flex-row gap-2">
-              <p className="text-sm text-muted-text">
-                <span className="font-bold text-primary-text">
-                  {follower.followersPage.pageInfo.total}
-                </span>{" "}
-                Followers
-              </p>
-              <p className="text-sm text-muted-text">
-                <span className="font-bold text-primary-text">
-                  {follower.followingPage.pageInfo.total}
-                </span>{" "}
-                Following
-              </p>
+              Total Anime
+            </div>
+            <div className="flex flex-col items-center text-sm text-muted-text">
+              <span className="font-bold text-2xl md:text-3xl text-primary">
+                {(user.statistics.anime.minutesWatched / 1440).toFixed(1)}
+              </span>
+              Days Watched
+            </div>
+            <div className="flex flex-col items-center text-sm text-muted-text">
+              <span className="font-bold text-2xl md:text-3xl text-primary">
+                {user.statistics.anime.episodesWatched}
+              </span>
+              Episodes Watched
             </div>
           </div>
         </div>
