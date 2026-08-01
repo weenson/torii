@@ -182,6 +182,8 @@ export type ProfileInfoType = {
     avatar: { large: string };
     bannerImage: string;
     createdAt: number;
+    isFollowing: boolean;
+    isFollower: boolean;
     statistics: {
       anime: {
         count: number;
@@ -189,6 +191,14 @@ export type ProfileInfoType = {
         episodesWatched: number;
       };
     };
+  };
+};
+
+export type ToggleFollowType = {
+  ToggleFollow: {
+    id: number;
+    name: string;
+    isFollowing: boolean;
   };
 };
 

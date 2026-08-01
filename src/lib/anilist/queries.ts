@@ -225,6 +225,8 @@ export const PROFILE_INFO = `
       avatar { large }
       bannerImage
       createdAt
+      isFollowing
+      isFollower
       statistics {
         anime {
           count
@@ -234,6 +236,16 @@ export const PROFILE_INFO = `
           episodesWatched
         }
       }
+    }
+  }
+`;
+
+export const TOGGLE_FOLLOW = `
+  mutation ($userId: Int) {
+    ToggleFollow(userId: $userId) {
+      id
+      name
+      isFollowing
     }
   }
 `;

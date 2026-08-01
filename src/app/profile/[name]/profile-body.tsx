@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { UserAnimeListType } from "@/types/anime";
 import ProfileAnimeTab from "./profile-anime-tab";
 import { Search, Play, Trash, Clock, Check, LucideIcon } from "lucide-react";
@@ -84,7 +85,20 @@ export default function ProfileBody({
         </ul>
       </aside>
       <section className="text-primary-text">
-        <ProfileAnimeTab list={filteredAnime} />
+        {filteredAnime.length > 0 ? (
+          <ProfileAnimeTab list={filteredAnime} />
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-4">
+            <Image
+              src="/images/ikuyo-cry.webp"
+              alt="No anime found"
+              width={100}
+              height={100}
+              className="w-24 h-24 rounded-full"
+            />
+            <div className="text-center text-muted-text">No anime found.</div>
+          </div>
+        )}
       </section>
     </div>
   );
