@@ -1,17 +1,20 @@
 import AppNavBar from "@/components/ui/navbar/app-navbar";
 import { fetchAniList } from "@/lib/anilist/client";
 import {
+  USER_INFO,
   USER_ANIME_LIST,
   PROFILE_INFO,
   FOLLOWING_USERS,
 } from "@/lib/anilist/queries";
 import {
+  UserInfoType,
   UserAnimeListType,
   ProfileInfoType,
   FollowUsersType,
 } from "@/types/anime";
 import ProfileBody from "./profile-body";
 import ProfileHeader from "./profile-header";
+import getIsLoggedIn from "@/lib/anilist/auth";
 
 export default async function ProfilePage({
   params,
@@ -19,10 +22,24 @@ export default async function ProfilePage({
   params: Promise<{ name: string }>;
 }) {
   const { name } = await params;
+  const isLoggedIn = await getIsLoggedIn();
 
-  const [animeData, userInfo] = await Promise.all([
+  const [loggedInUserInfo, animeData, userInfo] = await Promise.all([
+    isLoggedIn?.token
+      ? fetchAniList<UserInfoType>(
+          USER_INFO,
+          undefined,
+          undefined,
+          isLoggedIn?.token,
+        )
+      : null,
     fetchAniList<UserAnimeListType>(USER_ANIME_LIST, { userName: name }),
-    fetchAniList<ProfileInfoType>(PROFILE_INFO, { userName: name }),
+    fetchAniList<ProfileInfoType>(
+      PROFILE_INFO,
+      { userName: name },
+      undefined,
+      isLoggedIn?.token,
+    ),
   ]);
 
   const anime = animeData.MediaListCollection.lists;
@@ -45,7 +62,12 @@ export default async function ProfilePage({
     <main className="flex flex-col gap-6">
       <AppNavBar overlay />
       <section>
-        <ProfileHeader user={user} follower={followerInfo} />
+        <ProfileHeader
+          user={user}
+          follower={followerInfo}
+          isLoggedIn={isLoggedIn.IsLoggedIn}
+          viewerId={loggedInUserInfo?.Viewer.id ?? null}
+        />
       </section>
       <section className="px-4">
         <ProfileBody

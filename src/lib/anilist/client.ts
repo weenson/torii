@@ -10,6 +10,7 @@ export async function fetchAniList<T>(
   variables?: Record<string, any>,
   signal?: AbortSignal,
   token?: string,
+  noStore?: boolean,
 ): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -28,7 +29,7 @@ export async function fetchAniList<T>(
       variables,
     }),
     signal,
-    next: { revalidate: 3600 },
+    ...(noStore ? { cache: "no-store" } : { next: { revalidate: 3600 } }),
   });
 
   const json: AniListResponse<T> = await response.json();

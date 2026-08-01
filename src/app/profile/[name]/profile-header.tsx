@@ -2,12 +2,21 @@ import { ProfileInfoType, FollowUsersType } from "@/types/anime";
 import { Calendar } from "lucide-react";
 import { formatDateToMMDDYY } from "@/lib/anilist/format";
 import Image from "next/image";
+import FollowButton from "./follow-button";
+
 type UserProps = {
   user: ProfileInfoType["User"];
   follower: FollowUsersType;
+  isLoggedIn: boolean;
+  viewerId: number | null;
 };
 
-export default function ProfileHeader({ user, follower }: UserProps) {
+export default function ProfileHeader({
+  user,
+  follower,
+  isLoggedIn,
+  viewerId,
+}: UserProps) {
   return (
     <div>
       <div className="h-[30vh] overflow-hidden w-full relative">
@@ -39,20 +48,14 @@ export default function ProfileHeader({ user, follower }: UserProps) {
                   {formatDateToMMDDYY(user.createdAt)}
                 </span>
               </p>
-              <div className="flex gap-3">
-                <p className="text-sm text-muted-text">
-                  <span className="font-bold text-primary-text">
-                    {follower.followersPage.pageInfo.total}
-                  </span>{" "}
-                  Followers
-                </p>
-                <p className="text-sm text-muted-text">
-                  <span className="font-bold text-primary-text">
-                    {follower.followingPage.pageInfo.total}
-                  </span>{" "}
-                  Following
-                </p>
-              </div>
+              <FollowButton
+                userId={user.id}
+                isLoggedIn={isLoggedIn}
+                initialIsFollowing={user.isFollowing}
+                isOwnProfile={viewerId === user.id}
+                initialFollowerCount={follower.followersPage.pageInfo.total}
+                initialFollowingCount={follower.followingPage.pageInfo.total}
+              />
             </div>
           </div>
           <div className="flex gap-6 md:gap-8 justify-center">
