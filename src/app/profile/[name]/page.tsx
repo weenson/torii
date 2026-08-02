@@ -59,7 +59,7 @@ export default async function ProfilePage({
     anime.find((list) => list.status === "DROPPED")?.entries ?? [];
 
   return (
-    <main className="flex flex-col gap-6">
+    <main className="flex flex-col">
       <AppNavBar overlay />
       <section>
         <ProfileHeader
@@ -69,7 +69,7 @@ export default async function ProfilePage({
           viewerId={loggedInUserInfo?.Viewer.id ?? null}
         />
       </section>
-      <section className="px-4">
+      <section className="px-4 py-6 pb-14">
         <ProfileBody
           watching={watchingList}
           completed={completedList}

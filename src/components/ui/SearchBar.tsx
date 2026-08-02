@@ -38,7 +38,7 @@ export default function SearchBar() {
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") return;
         console.error(err);
-      } finally{  
+      } finally {
         setIsLoading(false);
       }
     }, 300);
@@ -61,16 +61,23 @@ export default function SearchBar() {
         setCurrentIndex(currentIndex - 1);
       }
     }
-    if (e.key === "Enter" && currentIndex >= 0 && currentIndex < suggestions.length) {
+    if (
+      e.key === "Enter" &&
+      currentIndex >= 0 &&
+      currentIndex < suggestions.length
+    ) {
       e.preventDefault();
       router.push(`/anime/${suggestions[currentIndex].id}`);
       setSuggestions([]);
     }
-  }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchBarRef.current && !searchBarRef.current.contains(event.target as Node)) {
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target as Node)
+      ) {
         setSuggestions([]);
         setSearchTerm("");
         setCurrentIndex(0);
@@ -99,7 +106,7 @@ export default function SearchBar() {
       />
 
       {searchTerm.trim() && (isLoading || suggestions.length > 0) && (
-        <ul className="absolute top-full z-50 mt-1 max-h-80 w-full overflow-y-auto rounded-lg border border-border bg-card shadow-lg scrollbar-thin-muted">
+        <ul className="absolute top-full z-30 mt-1 max-h-80 w-full overflow-y-auto rounded-lg border border-border bg-card shadow-lg scrollbar-thin-muted">
           {isLoading ? (
             <li className="px-3 py-3 text-xs text-muted-text">Loading...</li>
           ) : (
@@ -111,7 +118,7 @@ export default function SearchBar() {
                     setSearchTerm("");
                     setSuggestions([]);
                   }}
-                  className={`flex items-center gap-3 px-3 py-3 hover:bg-secondary ${currentIndex === index ? 'bg-secondary' : ''}`}
+                  className={`flex items-center gap-3 px-3 py-3 hover:bg-secondary ${currentIndex === index ? "bg-secondary" : ""}`}
                 >
                   {anime.coverImage?.extraLarge && (
                     <img
@@ -124,31 +131,31 @@ export default function SearchBar() {
                     <p className="truncate text-sm text-primary-text">
                       {anime.title.english ?? anime.title.romaji}
                     </p>
-                      <div className="text-xs text-muted-text flex items-center gap-1">
-                        {anime.format && (
-                          <span className="flex items-center">
-                            {anime.format}
-                            <Dot />
-                          </span>
-                        )}
-                        {anime.status && (
-                          <span className="flex items-center">
-                            {anime.status}
-                            <Dot />
-                          </span>
-                        )}
-                        {anime.season && anime.seasonYear && (
-                          <span className="flex items-center">
-                            {anime.season} {anime.seasonYear}
-                            <Dot />
-                          </span>
-                        )}
-                        {anime.episodes && (
-                          <span className="flex items-center">
-                            {anime.episodes} episodes
-                          </span>
-                        )}
-                      </div>
+                    <div className="text-xs text-muted-text flex items-center gap-1">
+                      {anime.format && (
+                        <span className="flex items-center">
+                          {anime.format}
+                          <Dot />
+                        </span>
+                      )}
+                      {anime.status && (
+                        <span className="flex items-center">
+                          {anime.status}
+                          <Dot />
+                        </span>
+                      )}
+                      {anime.season && anime.seasonYear && (
+                        <span className="flex items-center">
+                          {anime.season} {anime.seasonYear}
+                          <Dot />
+                        </span>
+                      )}
+                      {anime.episodes && (
+                        <span className="flex items-center">
+                          {anime.episodes} episodes
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </Link>
               </li>
