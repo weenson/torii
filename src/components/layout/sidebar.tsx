@@ -6,7 +6,6 @@ import {
   Users,
   Settings,
   Calendar,
-  Heart,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -16,9 +15,11 @@ import { useEffect } from "react";
 export default function SideBar({
   open,
   onClose,
+  username,
 }: {
   open: boolean;
   onClose: () => void;
+  username: string | null;
 }) {
   const pathname = usePathname();
   const links = [
@@ -31,7 +32,7 @@ export default function SideBar({
       group: [
         { href: "/browse", label: "Browse", icon: LayoutGrid },
         { href: "#", label: "Schedule", icon: Calendar },
-        { href: "/profile", label: "Profile", icon: Users },
+        { href: "/profile/" + username, label: "Profile", icon: Users },
       ],
     },
     {
@@ -66,7 +67,7 @@ export default function SideBar({
           <div className="h-full py-4 px-3 flex flex-col gap-6 text-muted-text font-bold text-sm">
             <div className="flex items-center gap-4 justify-center">
               <Image
-                src="images/logo.svg"
+                src="/images/logo.svg"
                 alt="logo"
                 width={100}
                 height={100}

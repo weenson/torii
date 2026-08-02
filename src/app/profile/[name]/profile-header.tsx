@@ -39,7 +39,7 @@ export default function ProfileHeader({
               height={360}
               className="rounded-full h-32 w-32 md:h-48 md:w-48 shrink-0"
             />
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 items-start">
               <h2 className="font-bold text-2xl md:text-3xl">{user.name}</h2>
               <p className="text-sm text-muted-text flex items-center gap-1">
                 <Calendar className="w-4 h-4 shrink-0" />

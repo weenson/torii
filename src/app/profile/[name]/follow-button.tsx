@@ -27,7 +27,7 @@ export default function FollowButton({
 
   if (!isLoggedIn) {
     return (
-      <Button link="/api/auth/login" size="md" variant="signup">
+      <Button link="/auth/login" size="md" variant="signup">
         <LogIn className="w-4 h-4" /> Sign in
       </Button>
     );

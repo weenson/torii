@@ -78,7 +78,7 @@ export default function NavBar({ overlay, isLoggedIn, userInfo }: NavBarProps) {
                 <User />
               ) : (
                 <button>
-                  <Link href="/api/auth/login">
+                  <Link href="/auth/login">
                     <span className="flex items-center gap-2 text-primary-text bg-primary px-4 py-2 font-bold text-sm rounded-md hover:bg-dark-red transition-colors duration-300">
                       <LogIn />
                       Sign in
@@ -90,7 +90,11 @@ export default function NavBar({ overlay, isLoggedIn, userInfo }: NavBarProps) {
           </ul>
         </div>
       </nav>
-      <SideBar open={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+      <SideBar
+        open={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        username={userInfo?.name ?? null}
+      />
     </>
   );
 }

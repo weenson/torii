@@ -16,7 +16,7 @@ const variantStyles = {
   outline:
     "border border-primary text-primary hover:bg-primary/10 inline-flex items-center",
   signup:
-    "bg-primary text-primary-text hover:bg-primary/90 inline-flex items-start",
+    "bg-primary text-primary-text hover:bg-primary/90 inline-flex items-center",
 };
 
 const sizeStyles = {
