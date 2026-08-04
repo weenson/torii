@@ -7,6 +7,8 @@ import Link from "next/link";
 import SearchBar from "../SearchBar";
 import { UserInfoType } from "@/types/anime";
 import SideBar from "@/components/layout/sidebar";
+import UserMenu from "./user-menu";
+import NotificationMenu from "./notification-menu";
 
 type NavBarProps = {
   overlay?: boolean;
@@ -62,17 +64,12 @@ export default function NavBar({ overlay, isLoggedIn, userInfo }: NavBarProps) {
               <SearchBar />
             </li>
             <li className="flex items-center gap-4">
-              <button>
-                <Bell />
-              </button>
+              <NotificationMenu isLoggedIn={isLoggedIn ?? false} />
 
               {isLoggedIn && userInfo?.avatar?.medium ? (
-                <Image
-                  src={userInfo.avatar.medium}
-                  alt={userInfo.name}
-                  width={40}
-                  height={40}
-                  className="rounded-full bg-muted-text"
+                <UserMenu
+                  name={userInfo.name}
+                  avatar={userInfo.avatar?.medium}
                 />
               ) : isLoggedIn ? (
                 <User />
@@ -94,6 +91,7 @@ export default function NavBar({ overlay, isLoggedIn, userInfo }: NavBarProps) {
         open={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
         username={userInfo?.name ?? null}
+        isLoggedIn={isLoggedIn ?? null}
       />
     </>
   );

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { UserAnimeListType } from "@/types/anime";
 import { formatStatusAndType } from "@/lib/anilist/format";
+import Link from "next/link";
 
 type MediaListEntry =
   UserAnimeListType["MediaListCollection"]["lists"][number]["entries"][number];
@@ -24,19 +25,21 @@ export default function ProfileAnimeTab({ list }: { list: MediaListEntry[] }) {
         <tbody>
           {list.map((anime) => (
             <tr key={anime.id} className="border-b border-border/50">
-              <td className="py-3 pr-4">
-                <div className="flex items-center gap-3">
-                  <Image
-                    src={anime.media.coverImage?.extraLarge ?? ""}
-                    alt=""
-                    width={40}
-                    height={56}
-                    className="rounded-md shrink-0"
-                  />
-                  <span className="font-bold">
-                    {anime.media.title.english ?? anime.media.title.romaji}
-                  </span>
-                </div>
+              <td className="py-3 pr-4 cursor-pointer hover:underline">
+                <Link href={`/anime/${anime.media.id}`}>
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={anime.media.coverImage?.extraLarge ?? ""}
+                      alt=""
+                      width={40}
+                      height={56}
+                      className="rounded-md shrink-0"
+                    />
+                    <span className="font-bold">
+                      {anime.media.title.english ?? anime.media.title.romaji}
+                    </span>
+                  </div>
+                </Link>
               </td>
               <td className="py-3 pr-4 text-muted-text hidden md:table-cell">
                 {formatStatusAndType(anime.media.format)}
