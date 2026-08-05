@@ -300,3 +300,31 @@ export const FOLLOWING_USERS = `
     }
   }
 `;
+
+export const NOTIFICATIONS = `
+query ($page: Int, $perPage: Int) {
+  Page(page: $page, perPage: $perPage) {
+    notifications(resetNotificationCount: false) {
+      ... on AiringNotification {
+        id
+        type
+        createdAt
+        episode
+        media {
+          title { romaji english }
+          coverImage { medium }
+        }
+      }
+      ... on FollowingNotification {
+        id
+        type
+        createdAt
+        user {
+          name
+          avatar { medium }
+        }
+      }
+    }
+  }
+}
+`;

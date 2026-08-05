@@ -5,7 +5,7 @@ import { User, Bell, Menu, LogIn } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import SearchBar from "../SearchBar";
-import { UserInfoType } from "@/types/anime";
+import { UserInfoType, Notification } from "@/types/anime";
 import SideBar from "@/components/layout/sidebar";
 import UserMenu from "./user-menu";
 import NotificationMenu from "./notification-menu";
@@ -14,11 +14,20 @@ type NavBarProps = {
   overlay?: boolean;
   isLoggedIn?: boolean;
   userInfo?: UserInfoType["Viewer"] | null;
+  notifications?: Notification[];
 };
 
-export default function NavBar({ overlay, isLoggedIn, userInfo }: NavBarProps) {
+type openDropDownProps = "user" | "notifications" | null;
+
+export default function NavBar({
+  overlay,
+  isLoggedIn,
+  userInfo,
+  notifications = [],
+}: NavBarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openDropDown, setOpenDropDown] = useState<openDropDownProps>(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -64,12 +73,21 @@ export default function NavBar({ overlay, isLoggedIn, userInfo }: NavBarProps) {
               <SearchBar />
             </li>
             <li className="flex items-center gap-4">
-              <NotificationMenu isLoggedIn={isLoggedIn ?? false} />
+              <NotificationMenu
+                isLoggedIn={isLoggedIn ?? false}
+                open={openDropDown === "notifications"}
+                onOpenChange={(open) =>
+                  setOpenDropDown(open ? "notifications" : null)
+                }
+                notifications={notifications}
+              />
 
               {isLoggedIn && userInfo?.avatar?.medium ? (
                 <UserMenu
                   name={userInfo.name}
                   avatar={userInfo.avatar?.medium}
+                  open={openDropDown === "user"}
+                  onOpenChange={(open) => setOpenDropDown(open ? "user" : null)}
                 />
               ) : isLoggedIn ? (
                 <User />

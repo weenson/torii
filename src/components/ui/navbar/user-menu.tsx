@@ -6,8 +6,15 @@ import { User, LogOut } from "lucide-react";
 type UserMenuProps = {
   name: string;
   avatar: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 };
-export default function UserMenu({ name, avatar }: UserMenuProps) {
+export default function UserMenu({
+  name,
+  avatar,
+  open,
+  onOpenChange,
+}: UserMenuProps) {
   return (
     <Dropdown
       trigger={
@@ -20,6 +27,8 @@ export default function UserMenu({ name, avatar }: UserMenuProps) {
         />
       }
       width="min-w-56"
+      open={open}
+      onOpenChange={onOpenChange}
     >
       <Link
         href={`/profile/${name}`}

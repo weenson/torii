@@ -110,3 +110,24 @@ export function formatDateToMMDDYY(date: number) {
   const year = dateObj.getFullYear();
   return `${month} ${day}, ${year}`;
 }
+
+export function formatToTimeAgo(date: number) {
+  const now = Date.now();
+  const then = date * 1000;
+  const diffInMins = Math.floor((now - then) / 60000);
+
+  if (diffInMins < 1) return "Just now";
+  if (diffInMins < 60) return `${diffInMins}m ago`;
+
+  const diffInHours = Math.floor(diffInMins / 60);
+  if (diffInHours < 24) return `${diffInHours}h ago`;
+
+  const diffInDays = Math.floor(diffInMins / (60 * 24));
+  return `${diffInDays}d ago`;
+
+  const diffInMonths = Math.floor(diffInDays / 30);
+  return `${diffInMonths}mo ago`;
+
+  const diffInYear = Math.floor(diffInMonths / 365);
+  return `${diffInMonths}y ago`;
+}
