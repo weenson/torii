@@ -127,6 +127,37 @@ export const GET_ANIME_BY_ID = `
   }
 `;
 
+export const GET_MEDIA_LIST_ENTRY = `
+  query ($mediaId: Int, $userId: Int) {
+    MediaList(mediaId: $mediaId, userId: $userId) {
+      id
+      status
+      progress
+      score
+    }
+  }
+`;
+
+export const SAVE_MEDIA_LIST_ENTRY = `
+  mutation ($mediaId: Int, $status: MediaListStatus, $progress: Int, $score: Float) {
+    SaveMediaListEntry(
+      mediaId: $mediaId
+      status: $status
+      progress: $progress
+      score: $score
+    ) {
+      id
+      status
+      progress
+      score
+      media {
+        id
+        title { romaji english }
+      }
+    }
+  }
+`;
+
 export const BROWSE_ANIME = `
   query BrowseAnime(
     $page: Int
@@ -297,6 +328,43 @@ export const FOLLOWING_USERS = `
       followers: followers(userId: $userId) {
         id
       }
+    }
+  }
+`;
+
+export const NOTIFICATIONS = `
+query ($page: Int, $perPage: Int) {
+  Page(page: $page, perPage: $perPage) {
+    notifications(resetNotificationCount: true) {
+      ... on AiringNotification {
+        id
+        type
+        createdAt
+        episode
+        media {
+          id
+          title { romaji english }
+          coverImage { medium }
+        }
+      }
+      ... on FollowingNotification {
+        id
+        type
+        createdAt
+        user {
+          name
+          avatar { medium }
+        }
+      }
+    }
+  }
+}
+`;
+
+export const UNREAD_NOTIFICATIONS = `
+  query {
+    Viewer {
+      unreadNotificationCount
     }
   }
 `;

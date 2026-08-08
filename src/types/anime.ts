@@ -135,6 +135,28 @@ export type AnimeByIDType = {
   Media: AnimeByID | null;
 };
 
+export type MediaListEntryType = {
+  MediaList: {
+    id: number;
+    status: string;
+    score: number;
+    progress: number;
+  };
+};
+
+export type SaveMediaListEntryType = {
+  SaveMediaListEntry: {
+    id: number;
+    status: "CURRENT" | "PLANNING" | "COMPLETED" | "DROPPED" | "PAUSED";
+    progress: number;
+    score: number;
+    media: {
+      id: number;
+      title: { romaji: string; english: string | null };
+    };
+  };
+};
+
 export type BrowseAnimeListType = {
   Page: {
     pageInfo: {
@@ -228,4 +250,43 @@ type PageType = {
 export type FollowUsersType = {
   followingPage: PageType;
   followersPage: PageType;
+};
+
+export type AiringNotification = {
+  id: number;
+  type: "AIRING";
+  createdAt: number;
+  episode: number;
+  media: {
+    id: number;
+    title: {
+      romaji: string;
+      english: string | null;
+    };
+    coverImage: { medium: string };
+  };
+};
+
+export type FollowingNotification = {
+  id: number;
+  type: "FOLLOWING";
+  createdAt: number;
+  user: {
+    name: string;
+    avatar: { medium: string };
+  };
+};
+
+export type Notification = AiringNotification | FollowingNotification;
+
+export type NotificationsType = {
+  Page: {
+    notifications: Notification[];
+  };
+};
+
+export type UnreadNotificationsType = {
+  Viewer: {
+    unreadNotificationCount: number;
+  };
 };

@@ -1,31 +1,33 @@
-"use client";
-
-import { useState, useRef, useEffect, type ReactNode } from "react";
-
 type DropdownProps = {
   trigger: React.ReactNode;
   children: React.ReactNode;
   width?: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 };
 
-export default function Dropdown({ trigger, children, width }: DropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
-
+export default function Dropdown({
+  trigger,
+  children,
+  width,
+  open,
+  onOpenChange,
+}: DropdownProps) {
   return (
     <div className="relative inline-block">
       <button
         type="button"
         className="cursor-pointer"
-        onClick={() => setIsOpen((open) => !open)}
-        aria-expanded={isOpen}
+        onClick={() => onOpenChange(!open)}
+        aria-expanded={open}
       >
         {trigger}
       </button>
-      {isOpen && (
+      {open && (
         <div
-          className={`absolute right-0 top-full z-50 mt-2 rounded-lg border border-muted bg-card p-2 shadow-lg ${width}`}
+          className={`absolute right-0 top-full z-50 mt-2 max-h-125 overflow-y-auto rounded-lg scrollbar-thin border border-muted bg-card p-2 shadow-lg ${width}`}
         >
-          <div onClick={() => setIsOpen(false)}>{children}</div>
+          <div onClick={() => onOpenChange(!open)}>{children}</div>
         </div>
       )}
     </div>
