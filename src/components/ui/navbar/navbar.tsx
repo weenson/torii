@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { User, Bell, Menu, LogIn } from "lucide-react";
+import { User, Menu, LogIn } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import SearchBar from "../SearchBar";
-import { UserInfoType, Notification } from "@/types/anime";
+import { UserInfoType } from "@/types/anime";
 import SideBar from "@/components/layout/sidebar";
 import UserMenu from "./user-menu";
 import NotificationMenu from "./notification-menu";
@@ -14,7 +14,7 @@ type NavBarProps = {
   overlay?: boolean;
   isLoggedIn?: boolean;
   userInfo?: UserInfoType["Viewer"] | null;
-  notifications?: Notification[];
+  unreadNotificationsCount?: number;
 };
 
 type openDropDownProps = "user" | "notifications" | null;
@@ -23,11 +23,14 @@ export default function NavBar({
   overlay,
   isLoggedIn,
   userInfo,
-  notifications = [],
+  unreadNotificationsCount,
 }: NavBarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropDown, setOpenDropDown] = useState<openDropDownProps>(null);
+  const [notificationCount, setNotificationCount] = useState(
+    unreadNotificationsCount ?? 0,
+  );
 
   useEffect(() => {
     const onScroll = () => {
@@ -73,14 +76,23 @@ export default function NavBar({
               <SearchBar />
             </li>
             <li className="flex items-center gap-4">
-              <NotificationMenu
-                isLoggedIn={isLoggedIn ?? false}
-                open={openDropDown === "notifications"}
-                onOpenChange={(open) =>
-                  setOpenDropDown(open ? "notifications" : null)
-                }
-                notifications={notifications}
-              />
+              <div className="relative">
+                {notificationCount > 0 && (
+                  <span className="z-10 absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {notificationCount}
+                  </span>
+                )}
+                <NotificationMenu
+                  isLoggedIn={isLoggedIn ?? false}
+                  open={openDropDown === "notifications"}
+                  onOpenChange={(open) =>
+                    setOpenDropDown(open ? "notifications" : null)
+                  }
+                  onNotificationCountChange={(count) =>
+                    setNotificationCount(count)
+                  }
+                />
+              </div>
 
               {isLoggedIn && userInfo?.avatar?.medium ? (
                 <UserMenu

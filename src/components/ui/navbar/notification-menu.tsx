@@ -1,4 +1,5 @@
-import { Bell } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Bell, Loader2 } from "lucide-react";
 import Dropdown from "../dropdown";
 import { Notification } from "@/types/anime";
 import Image from "next/image";
@@ -9,13 +10,40 @@ export default function NotificationMenu({
   isLoggedIn,
   open,
   onOpenChange,
-  notifications = [],
+  onNotificationCountChange,
 }: {
   isLoggedIn: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  notifications: Notification[];
+  onNotificationCountChange: (count: number) => void;
 }) {
+  const [notification, setNotifications] = useState<Notification[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open || !isLoggedIn) return;
+    let closeDropdown = false;
+    setIsLoading(true);
+
+    async function loadNotifications() {
+      setIsLoading(true);
+      try {
+        const res = await fetch("/api/notifications");
+        const data = await res.json();
+        if (closeDropdown) return;
+        setNotifications(data);
+        onNotificationCountChange(0);
+      } finally {
+        if (!closeDropdown) setIsLoading(false);
+      }
+    }
+    loadNotifications();
+
+    return () => {
+      closeDropdown = true;
+    };
+  }, [open, isLoggedIn]);
+
   if (!isLoggedIn) {
     return (
       <Dropdown
@@ -43,16 +71,29 @@ export default function NotificationMenu({
   return (
     <Dropdown
       trigger={<Bell className="h-6 w-6" />}
-      width="min-w-72"
+      width="min-w-96"
       open={open}
       onOpenChange={onOpenChange}
     >
-      <div className="text-sm font-bold mb-2">Notifications</div>
-      <hr className="mb-2 text-muted-text" />
-      {notifications.length === 0 ? (
-        <p className="text-muted-text text-sm">No notifications</p>
+      <div className="text-sm font-bold mb-2">
+        <span className="flex gap-2 items-center">
+          <Bell className="h-4 w-4" />
+          Notifications
+        </span>
+      </div>
+      <hr className="mb-2 text-muted" />
+      {isLoading ? (
+        <div className="flex flex-col gap-2 items-center p-4">
+          <Loader2 className="animate-spin" />
+          <p className="text-muted-text text-sm">Loading...</p>
+        </div>
+      ) : notification.length === 0 ? (
+        <div className="flex flex-col gap-2 items-center p-4">
+          <Bell className="text-muted-text" />
+          <p className="text-muted-text text-sm">No notifications.</p>
+        </div>
       ) : (
-        notifications.map((n) => {
+        notification.map((n) => {
           if (n.type === "FOLLOWING") {
             return (
               <div key={n.id} className="px-2 py-2 text-sm">
@@ -84,8 +125,28 @@ export default function NotificationMenu({
           if (n.type === "AIRING") {
             return (
               <div key={n.id} className="px-2 py-2 text-sm">
-                Episode {n.episode} of{" "}
-                {n.media.title.english ?? n.media.title.romaji} aired
+                <span className="flex gap-2">
+                  <Image
+                    src={n.media.coverImage.medium}
+                    alt=""
+                    width={42}
+                    height={42}
+                  />
+                  <div className="flex flex-col">
+                    <div>
+                      Episode {n.episode} of{" "}
+                      <span className="font-bold hover:underline">
+                        <Link href={`/anime/${n.media.id}`}>
+                          {n.media.title.english ?? n.media.title.romaji}
+                        </Link>
+                      </span>{" "}
+                      aired
+                    </div>
+                    <p className="text-muted-text text-xs">
+                      {formatToTimeAgo(n.createdAt)}
+                    </p>
+                  </div>
+                </span>
               </div>
             );
           }

@@ -25,7 +25,7 @@ export default function Dropdown({
       </button>
       {open && (
         <div
-          className={`absolute right-0 top-full z-50 mt-2 rounded-lg border border-muted bg-card p-2 shadow-lg ${width}`}
+          className={`absolute right-0 top-full z-50 mt-2 max-h-125 overflow-y-auto rounded-lg scrollbar-thin border border-muted bg-card p-2 shadow-lg ${width}`}
         >
           <div onClick={() => onOpenChange(!open)}>{children}</div>
         </div>
