@@ -134,26 +134,46 @@ export const GET_MEDIA_LIST_ENTRY = `
       status
       progress
       score
+      notes
+      startedAt { year month day }
+      completedAt { year month day }
+      repeat
     }
   }
 `;
 
 export const SAVE_MEDIA_LIST_ENTRY = `
-  mutation ($mediaId: Int, $status: MediaListStatus, $progress: Int, $score: Float) {
+  mutation ($mediaId: Int, $status: MediaListStatus, $progress: Int, $score: Float, $notes: String, $startedAt: FuzzyDateInput, $completedAt: FuzzyDateInput, $repeat: Int) {
     SaveMediaListEntry(
       mediaId: $mediaId
       status: $status
       progress: $progress
       score: $score
+      notes: $notes
+      startedAt: $startedAt
+      completedAt: $completedAt
+      repeat: $repeat
     ) {
       id
       status
       progress
       score
+      notes
+      startedAt { year month day }
+      completedAt { year month day }
+      repeat
       media {
         id
         title { romaji english }
       }
+    }
+  }
+`;
+
+export const DELETE_MEDIA_LIST_ENTRY = `
+  mutation ($id: Int) {
+    DeleteMediaListEntry(id: $id) {
+      deleted
     }
   }
 `;

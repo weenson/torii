@@ -11,6 +11,7 @@ export async function fetchAniList<T>(
   signal?: AbortSignal,
   token?: string,
   noStore?: boolean,
+  notFoundKey?: string,
 ): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -33,12 +34,15 @@ export async function fetchAniList<T>(
   });
 
   const json: AniListResponse<T> = await response.json();
+
   if (json.errors?.[0].message === "Not Found.") {
-    return { Media: null } as T;
+    if (!notFoundKey) throw new Error(json.errors[0].message);
+    return { [notFoundKey]: null } as T;
   }
 
   if (json.errors) {
     throw new Error(json.errors[0].message);
   }
+
   return json.data;
 }

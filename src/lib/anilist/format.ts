@@ -131,3 +131,22 @@ export function formatToTimeAgo(date: number) {
   const diffInYear = Math.floor(diffInMonths / 365);
   return `${diffInMonths}y ago`;
 }
+
+export function toFuzzyDate(
+  value: FormDataEntryValue | null,
+): { year: number; month: number; day: number } | null {
+  const [year, month, day] = value?.toString().split("-").map(Number) ?? [];
+  if (!year || !month || !day) return null;
+
+  return { year, month, day };
+}
+
+export function fromFuzzyDate(
+  date:
+    | { year: number | null; month: number | null; day: number | null }
+    | null
+    | undefined,
+): string {
+  if (!date?.year || !date?.month || !date?.day) return "";
+  return `${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
+}

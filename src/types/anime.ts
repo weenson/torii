@@ -138,10 +138,14 @@ export type AnimeByIDType = {
 export type MediaListEntryType = {
   MediaList: {
     id: number;
-    status: string;
+    status: "CURRENT" | "PLANNING" | "COMPLETED" | "DROPPED" | "PAUSED";
     score: number;
     progress: number;
-  };
+    notes: string;
+    startedAt: { year: number; month: number; day: number };
+    completedAt: { year: number; month: number; day: number };
+    repeat: number;
+  } | null;
 };
 
 export type SaveMediaListEntryType = {
@@ -150,10 +154,20 @@ export type SaveMediaListEntryType = {
     status: "CURRENT" | "PLANNING" | "COMPLETED" | "DROPPED" | "PAUSED";
     progress: number;
     score: number;
+    notes: string;
+    startedAt: { year: number; month: number; day: number };
+    completedAt: { year: number; month: number; day: number };
+    repeat: number;
     media: {
       id: number;
       title: { romaji: string; english: string | null };
     };
+  };
+};
+
+export type DeleteMediaListEntryType = {
+  DeleteMediaListEntry: {
+    deleted: boolean;
   };
 };
 
