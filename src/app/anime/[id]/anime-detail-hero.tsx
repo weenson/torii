@@ -13,6 +13,7 @@ import {
 import type { AnimeByID, MediaListEntryType } from "@/types/anime";
 import { Calendar, Tv, PlusIcon, Loader2, PencilIcon } from "lucide-react";
 import Modal from "@/components/ui/modal";
+import { toast } from "sonner";
 
 export default function AnimeDetailHero({
   anime,
@@ -60,7 +61,13 @@ export default function AnimeDetailHero({
       if (res.ok) {
         setEntry(await res.json());
         setIsOpen(false);
+        toast.success("List entry updated");
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Failed to update list entry");
       }
+    } catch {
+      toast.error("Something went wrong");
     } finally {
       setIsSaving(false);
     }
@@ -78,7 +85,13 @@ export default function AnimeDetailHero({
       if (res.ok) {
         setEntry(null);
         setIsOpen(false);
+        toast.success("List entry deleted");
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Failed to delete list entry");
       }
+    } catch {
+      toast.error("Something went wrong");
     } finally {
       setIsDeleting(false);
     }
@@ -211,7 +224,7 @@ export default function AnimeDetailHero({
                         name="progress"
                         min={0}
                         max={episodes ?? 1}
-                        defaultValue={entry?.progress ?? 0}
+                        defaultValue={entry?.progress ?? undefined}
                         className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
                       />
                     </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Button from "@/components/ui/button";
 import { LogIn, UserPlus, UserMinus, UserPen, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 type FollowButtonProps = {
   userId: number;
@@ -53,9 +54,13 @@ export default function FollowButton({
       if (res.ok) {
         setIsFollowing(data.isFollowing);
         setFollowerCount((c) => (data.isFollowing ? c + 1 : c - 1));
+        toast.success(data.isFollowing ? "Followed" : "Unfollowed");
+      } else {
+        toast.error(data.error || "Something went wrong");
       }
     } catch (error) {
       console.error(error);
+      toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
     }
