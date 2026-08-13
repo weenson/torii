@@ -1,16 +1,16 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import { formatToTimeAgo } from "@/lib/anilist/format";
 import { toast } from "sonner";
+import CommentBody from "./comment-body";
+import { Loader2, MessageCircleX } from "lucide-react";
 
 type CommentsProps = {
   mediaId: number;
   isLoggedIn: boolean;
 };
 
-type Comment = {
+export type Comment = {
   id: string;
   content: string;
   mediaId: number;
@@ -143,55 +143,25 @@ export default function Comments({ mediaId, isLoggedIn }: CommentsProps) {
           <p className="text-sm text-muted-text">Sign in to leave a comment.</p>
         )}
         {isLoading ? (
-          <div>Loading...</div>
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-10 w-10 animate-spin text-primary-text" />
+          </div>
         ) : comments.length > 0 ? (
           <div className="flex flex-col gap-3">
             {comments.map((comment) => (
-              <article
-                key={comment.id}
-                className="flex gap-3 rounded-lg border border-border bg-card p-4"
-              >
-                {comment.authorAvatarUrl ? (
-                  <Image
-                    src={comment.authorAvatarUrl}
-                    alt=""
-                    width={40}
-                    height={40}
-                    className="h-10 w-10 shrink-0 rounded-full object-cover"
-                  />
-                ) : (
-                  <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-bold text-primary-text"
-                    aria-hidden="true"
-                  >
-                    {comment.authorName.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                    <span className="font-semibold text-primary-text">
-                      {comment.authorName}
-                    </span>
-                    <time
-                      dateTime={comment.createdAt}
-                      className="text-xs text-muted-text"
-                    >
-                      {formatToTimeAgo(
-                        Math.floor(
-                          new Date(comment.createdAt).getTime() / 1000,
-                        ),
-                      )}
-                    </time>
-                  </div>
-                  <p className="mt-1.5 whitespace-pre-wrap wrap-break-word text-sm leading-relaxed text-primary-text">
-                    {comment.content}
-                  </p>
-                </div>
-              </article>
+              <CommentBody key={comment.id} comment={comment} />
             ))}
           </div>
         ) : (
-          <div>No comments found</div>
+          <div className="flex flex-col items-center justify-center gap-2">
+            <MessageCircleX className="h-10 w-10 text-muted-text" />
+            <div className="flex flex-col items-center justify-center gap-1">
+              <p className="text-md text-muted-text">No comments yet.</p>
+              <p className="text-sm text-muted-text">
+                Be the first to comment.
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>
