@@ -31,14 +31,22 @@ export default async function ProfilePage({
           undefined,
           undefined,
           isLoggedIn?.token,
+          true,
         )
       : null,
-    fetchAniList<UserAnimeListType>(USER_ANIME_LIST, { userName: name }),
+    fetchAniList<UserAnimeListType>(
+      USER_ANIME_LIST,
+      { userName: name },
+      undefined,
+      undefined,
+      true,
+    ),
     fetchAniList<ProfileInfoType>(
       PROFILE_INFO,
       { userName: name },
       undefined,
       isLoggedIn?.token,
+      true,
     ),
   ]);
 
@@ -57,7 +65,8 @@ export default async function ProfilePage({
     anime.find((list) => list.status === "PLANNING")?.entries ?? [];
   const droppedList =
     anime.find((list) => list.status === "DROPPED")?.entries ?? [];
-
+  const pausedList =
+    anime.find((list) => list.status === "PAUSED")?.entries ?? [];
   return (
     <main className="flex flex-col">
       <AppNavBar overlay />
@@ -75,6 +84,7 @@ export default async function ProfilePage({
           completed={completedList}
           planning={planningList}
           dropped={droppedList}
+          paused={pausedList}
         />
       </section>
     </main>

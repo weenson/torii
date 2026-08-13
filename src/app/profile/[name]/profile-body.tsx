@@ -3,7 +3,15 @@ import { useState } from "react";
 import Image from "next/image";
 import { UserAnimeListType } from "@/types/anime";
 import ProfileAnimeTab from "./profile-anime-tab";
-import { Search, Play, Trash, Clock, Check, LucideIcon } from "lucide-react";
+import {
+  Search,
+  Play,
+  Trash,
+  Clock,
+  Check,
+  Pause,
+  LucideIcon,
+} from "lucide-react";
 
 type MediaListEntry =
   UserAnimeListType["MediaListCollection"]["lists"][number]["entries"][number];
@@ -13,6 +21,7 @@ type ProfileBodyProps = {
   completed: MediaListEntry[];
   planning: MediaListEntry[];
   dropped: MediaListEntry[];
+  paused: MediaListEntry[];
 };
 
 export default function ProfileBody({
@@ -20,6 +29,7 @@ export default function ProfileBody({
   completed,
   planning,
   dropped,
+  paused,
 }: ProfileBodyProps) {
   const [currentTab, setCurrentTab] = useState(watching);
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,6 +54,11 @@ export default function ProfileBody({
       label: "Dropped",
       icon: Trash,
       value: dropped,
+    },
+    {
+      label: "Paused",
+      icon: Pause,
+      value: paused,
     },
   ];
 

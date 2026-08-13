@@ -1,5 +1,6 @@
 import AnimeDetailHero from "./anime-detail-hero";
 import AnimeDetailBody from "./anime-detail-body";
+import Comments from "@/components/comments/comments";
 import { fetchAniList } from "@/lib/anilist/client";
 import {
   GET_ANIME_BY_ID,
@@ -81,6 +82,9 @@ export default async function AnimePage({
           <CoverCarousel title="More like this" anime={recommendations} />
         </section>
       )}
+      <section className="px-4 mb-16">
+        <Comments mediaId={anime.id} isLoggedIn={isLoggedIn.IsLoggedIn} />
+      </section>
     </main>
   );
 }

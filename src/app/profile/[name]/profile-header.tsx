@@ -20,13 +20,17 @@ export default function ProfileHeader({
   return (
     <div>
       <div className="h-[30vh] overflow-hidden w-full relative">
-        <Image
-          src={user.bannerImage}
-          alt=""
-          width={1920}
-          height={1080}
-          className="object-cover object-[center_35%] w-full h-full"
-        />
+        {user.bannerImage ? (
+          <Image
+            src={user.bannerImage}
+            alt=""
+            width={1920}
+            height={1080}
+            className="object-cover object-[center_35%] w-full h-full"
+          />
+        ) : (
+          <div className="h-full w-full bg-card" />
+        )}
         <div className="absolute inset-0 bg-linear-to-t from-background via-background/70 to-background/20" />
       </div>
       <div className="relative -mt-24 mx-4">
