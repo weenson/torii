@@ -1,35 +1,35 @@
-import React from 'react'
+import React from "react";
 
 const footerLinks = [
   {
-    title: 'Product',
+    title: "Product",
     links: [
-      { label: 'Browse', href: '/browse' },
-      { label: 'Favorites', href: '/favorites' },
+      { label: "Browse", href: "/browse" },
+      { label: "Favorites", href: "/favorites" },
     ],
   },
   {
-    title: 'Community',
+    title: "Community",
     links: [
-      { label: 'Discord', href: '#' },
-      { label: 'Forum', href: '#' },
+      { label: "Discord", href: "#" },
+      { label: "Forum", href: "#" },
     ],
   },
   {
-    title: 'Resources',
+    title: "Resources",
     links: [
-      { label: 'Docs', href: '/docs' },
-      { label: 'FAQ', href: '/faq' },
+      { label: "Docs", href: "/docs" },
+      { label: "FAQ", href: "/faq" },
     ],
   },
   {
-    title: 'Legal',
+    title: "Legal",
     links: [
-      { label: 'Privacy', href: '/privacy' },
-      { label: 'Terms', href: '/terms' },
+      { label: "Privacy", href: "/privacy" },
+      { label: "Terms", href: "/terms" },
     ],
   },
-]
+];
 
 const now = new Date().getFullYear();
 
@@ -40,7 +40,9 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
           {footerLinks.map((column) => (
             <div key={column.title}>
-              <h3 className="text-primary-text font-bold mb-4">{column.title}</h3>
+              <h3 className="text-primary-text font-bold mb-4">
+                {column.title}
+              </h3>
               <ul className="flex flex-col gap-2">
                 {column.links.map((link) => (
                   <li key={link.label}>
@@ -58,14 +60,18 @@ const Footer = () => {
         </div>
 
         <p className="text-muted-text text-center border-t border-border pt-8">
-          © {now} Torii. Built with ❤️ by {' '}
-          <a href="https://github.com/weenson" target="_blank" className="text-primary hover:underline">
+          © {now} Torii. Built with ❤️ by{" "}
+          <a
+            href="https://github.com/weenson"
+            target="_blank"
+            className="text-primary hover:underline"
+          >
             weenson
           </a>
         </p>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

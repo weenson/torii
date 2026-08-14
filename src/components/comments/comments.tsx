@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import CommentBody from "./comment-body";
-import { Loader2, MessageCircleX } from "lucide-react";
+import { Loader2, MessageCircleX, MessageSquarePlus } from "lucide-react";
 
 type CommentsProps = {
   mediaId: number;
@@ -19,6 +19,8 @@ export type Comment = {
   authorAvatarUrl: string | "";
   createdAt: string;
   updatedAt: string;
+  parentId: string | null;
+  replies: Comment[];
 };
 
 export default function Comments({ mediaId, isLoggedIn }: CommentsProps) {
@@ -61,8 +63,43 @@ export default function Comments({ mediaId, isLoggedIn }: CommentsProps) {
     };
   }, [mediaId]);
 
+  async function submitComment(content: string, parentId?: string) {
+    const res = await fetch("/api/comments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mediaId,
+        content,
+        ...(parentId ? { parentId } : {}),
+      }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      toast.error(data.error ?? "Failed to post comment");
+      return false;
+    }
+
+    const newComment: Comment = { ...data, replies: data.replies ?? [] };
+
+    if (parentId) {
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === parentId
+            ? { ...c, replies: [...(c.replies ?? []), newComment] }
+            : c,
+        ),
+      );
+      toast.success("Reply posted");
+    } else {
+      setComments((prev) => [newComment, ...prev]);
+      toast.success("Comment posted successfully");
+    }
+
+    return true;
+  }
+
   async function handleSubmit({
-    mediaId,
     content,
   }: {
     mediaId: number;
@@ -71,24 +108,10 @@ export default function Comments({ mediaId, isLoggedIn }: CommentsProps) {
     if (!content) return;
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/comments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mediaId: mediaId,
-          content: content,
-        }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setComments((prev) => [data, ...prev]);
-        if (textareaRef.current) {
-          textareaRef.current.value = "";
-          textareaRef.current.style.height = "auto";
-        }
-        toast.success("Comment posted successfully");
+      const ok = await submitComment(content);
+      if (ok && textareaRef.current) {
+        textareaRef.current.value = "";
+        textareaRef.current.style.height = "auto";
       }
     } catch (error) {
       console.error(error);
@@ -98,8 +121,25 @@ export default function Comments({ mediaId, isLoggedIn }: CommentsProps) {
     }
   }
 
+  async function handleReply(parentId: string, content: string) {
+    try {
+      return await submitComment(content, parentId);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to post reply");
+      return false;
+    }
+  }
+
   return (
-    <div>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-2xl font-bold text-primary-text">Comments</h2>
+        <p className="text-sm text-muted-text">
+          Share your thoughts about this anime.
+        </p>
+      </div>
+
       <div className="flex flex-col gap-4">
         {isLoggedIn ? (
           <form
@@ -109,38 +149,47 @@ export default function Comments({ mediaId, isLoggedIn }: CommentsProps) {
               const content = form.get("comment")?.toString().trim() ?? "";
               await handleSubmit({ mediaId, content });
             }}
-            className="flex flex-col gap-3"
+            className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 shadow-sm"
           >
-            <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-2">
+              <MessageSquarePlus
+                className="h-5 w-5 shrink-0 text-primary"
+                aria-hidden="true"
+              />
               <label
                 htmlFor="comment"
-                className="text-2xl font-bold text-primary-text"
+                className="text-sm font-semibold text-primary-text"
               >
-                Comment
+                Write a comment
               </label>
-              <textarea
-                ref={textareaRef}
-                id="comment"
-                name="comment"
-                rows={1}
-                placeholder="Write a comment..."
-                maxLength={500}
-                onInput={autoResizeTextarea}
-                className="min-h-24 w-full resize-none overflow-hidden rounded-md border border-border bg-background px-3 py-2 text-sm text-primary-text outline-none placeholder:text-muted-text focus:border-primary"
-              />
             </div>
-            <div className="flex justify-end">
+            <textarea
+              ref={textareaRef}
+              id="comment"
+              name="comment"
+              rows={3}
+              placeholder="What did you think?"
+              maxLength={500}
+              onInput={autoResizeTextarea}
+              className="min-h-24 w-full resize-none overflow-hidden rounded-md border border-border bg-background px-3 py-2.5 text-sm leading-relaxed text-primary-text outline-none transition-colors placeholder:text-muted-text focus:border-primary focus:ring-2 focus:ring-primary/20"
+            />
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">
+              <p className="text-xs text-muted-text">Max 500 characters</p>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="cursor-pointer rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-text transition-colors hover:bg-primary/90"
+                className="cursor-pointer rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-text transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? "Posting..." : "Post comment"}
               </button>
             </div>
           </form>
         ) : (
-          <p className="text-sm text-muted-text">Sign in to leave a comment.</p>
+          <div className="rounded-lg border border-border bg-card p-4 text-center">
+            <p className="text-sm text-muted-text">
+              Sign in to join the discussion.
+            </p>
+          </div>
         )}
         {isLoading ? (
           <div className="flex items-center justify-center">
@@ -149,7 +198,12 @@ export default function Comments({ mediaId, isLoggedIn }: CommentsProps) {
         ) : comments.length > 0 ? (
           <div className="flex flex-col gap-3">
             {comments.map((comment) => (
-              <CommentBody key={comment.id} comment={comment} />
+              <CommentBody
+                key={comment.id}
+                comment={comment}
+                isLoggedIn={isLoggedIn}
+                onReply={handleReply}
+              />
             ))}
           </div>
         ) : (

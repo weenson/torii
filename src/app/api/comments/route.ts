@@ -17,7 +17,10 @@ export async function GET(request: Request) {
   }
 
   const comments = await prisma.comment.findMany({
-    where: { mediaId },
+    where: { mediaId, parentId: null },
+    include: {
+      replies: { orderBy: { createdAt: "asc" } },
+    },
     orderBy: { createdAt: "desc" },
   });
 
@@ -30,7 +33,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Not logged in" }, { status: 401 });
   }
 
-  const { mediaId, content } = await request.json();
+  const { mediaId, content, parentId } = await request.json();
 
   if (!mediaId || !content.trim()) {
     return NextResponse.json(
@@ -56,6 +59,7 @@ export async function POST(request: Request) {
       authorId: viewer.id,
       authorName: viewer.name,
       authorAvatarUrl: viewer.avatar.medium,
+      ...(parentId ? { parentId } : {}),
     },
   });
 
