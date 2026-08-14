@@ -23,9 +23,22 @@ model Comment {
   updatedAt       DateTime @updatedAt
 
   parentId String?
-  parent   Comment?  @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
-  comments Comment[] @relation("Replies")
+  parent   Comment?      @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[]     @relation("Replies")
+  votes    CommentVote[]
 
   @@index([mediaId])
   @@index([parentId])
+}
+
+model CommentVote {
+  id        String @id @default(cuid())
+  commentId String
+  userId    Int
+  value     Int    @default(1)
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+  @@index([commentId])
 }

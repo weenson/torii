@@ -16,15 +16,51 @@ export async function GET(request: Request) {
     );
   }
 
+  const { IsLoggedIn, token } = await getIsLoggedIn();
+  let viewerId: number | null = null;
+  if (IsLoggedIn && token) {
+    const userData = await fetchAniList<UserInfoType>(
+      USER_INFO,
+      undefined,
+      undefined,
+      token,
+      true,
+    );
+    viewerId = userData.Viewer.id;
+  }
   const comments = await prisma.comment.findMany({
     where: { mediaId, parentId: null },
     include: {
-      replies: { orderBy: { createdAt: "asc" } },
+      votes: true,
+      replies: {
+        orderBy: { createdAt: "asc" },
+        include: { votes: true },
+      },
     },
     orderBy: { createdAt: "desc" },
   });
 
-  return NextResponse.json(comments);
+  function withVotes<T extends { votes: { userId: number; value: number }[] }>(
+    comment: T,
+  ) {
+    const { votes, ...rest } = comment;
+    return {
+      ...rest,
+      likeCount: votes.filter((v) => v.value === 1).length,
+      dislikeCount: votes.filter((v) => v.value === -1).length,
+      myVote:
+        viewerId == null
+          ? null
+          : (votes.find((v) => v.userId === viewerId)?.value ?? null),
+    };
+  }
+
+  return NextResponse.json(
+    comments.map((comment) => ({
+      ...withVotes(comment),
+      replies: comment.replies.map(withVotes),
+    })),
+  );
 }
 
 export async function POST(request: Request) {

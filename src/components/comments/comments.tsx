@@ -21,6 +21,9 @@ export type Comment = {
   updatedAt: string;
   parentId: string | null;
   replies: Comment[];
+  likeCount?: number;
+  dislikeCount?: number;
+  myVote?: number | null;
 };
 
 export default function Comments({ mediaId, isLoggedIn }: CommentsProps) {
@@ -80,7 +83,13 @@ export default function Comments({ mediaId, isLoggedIn }: CommentsProps) {
       return false;
     }
 
-    const newComment: Comment = { ...data, replies: data.replies ?? [] };
+    const newComment: Comment = {
+      ...data,
+      replies: data.replies ?? [],
+      likeCount: data.likeCount ?? 0,
+      dislikeCount: data.dislikeCount ?? 0,
+      myVote: data.myVote ?? null,
+    };
 
     if (parentId) {
       setComments((prev) =>
@@ -127,6 +136,51 @@ export default function Comments({ mediaId, isLoggedIn }: CommentsProps) {
     } catch (error) {
       console.error(error);
       toast.error("Failed to post reply");
+      return false;
+    }
+  }
+
+  function applyVote(
+    comments: Comment[],
+    commentId: string,
+    vote: { likeCount: number; dislikeCount: number; myVote: number | null },
+  ): Comment[] {
+    return comments.map((c) => {
+      if (c.id === commentId) {
+        return { ...c, ...vote };
+      }
+      if (c.replies?.length) {
+        return { ...c, replies: applyVote(c.replies, commentId, vote) };
+      }
+      return c;
+    });
+  }
+
+  async function handleVote(commentId: string, clickedButton: "like" | "dislike") {
+    try {
+      const res = await fetch("/api/comments/vote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ commentId, clickedButton }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error ?? "Failed to vote");
+        return false;
+      }
+
+      setComments((prev) =>
+        applyVote(prev, commentId, {
+          likeCount: data.likeCount,
+          dislikeCount: data.dislikeCount,
+          myVote: data.myVote,
+        }),
+      );
+      return true;
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to vote");
       return false;
     }
   }
@@ -203,6 +257,7 @@ export default function Comments({ mediaId, isLoggedIn }: CommentsProps) {
                 comment={comment}
                 isLoggedIn={isLoggedIn}
                 onReply={handleReply}
+                onVote={handleVote}
               />
             ))}
           </div>

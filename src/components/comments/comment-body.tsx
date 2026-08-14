@@ -4,18 +4,23 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { formatToTimeAgo } from "@/lib/anilist/format";
 import type { Comment } from "./comments";
-import { MessageSquareReply, X } from "lucide-react";
+import { MessageSquareReply, ThumbsDown, ThumbsUp, X } from "lucide-react";
 
 type CommentBodyProps = {
   comment: Comment;
   isLoggedIn: boolean;
   onReply: (parentId: string, content: string) => Promise<boolean>;
+  onVote: (
+    commentId: string,
+    clickedButton: "like" | "dislike",
+  ) => Promise<boolean>;
 };
 
 export default function CommentBody({
   comment,
   isLoggedIn,
   onReply,
+  onVote,
 }: CommentBodyProps) {
   const [isReplying, setIsReplying] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,16 +92,53 @@ export default function CommentBody({
           <p className="mt-1.5 whitespace-pre-wrap wrap-break-word text-sm leading-relaxed text-primary-text">
             {comment.content}
           </p>
-          {canReply && !isReplying && (
+          <div className="mt-2.5 flex items-center gap-3">
             <button
               type="button"
-              onClick={() => setIsReplying(true)}
-              className="mt-2.5 inline-flex cursor-pointer items-center gap-1.5 text-xs font-medium text-muted-text transition-colors hover:text-primary"
+              disabled={!isLoggedIn}
+              onClick={() => onVote(comment.id, "like")}
+              className={`inline-flex cursor-pointer items-center gap-1 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                comment.myVote === 1
+                  ? "text-primary"
+                  : "text-muted-text hover:text-primary"
+              }`}
             >
-              <MessageSquareReply className="h-3.5 w-3.5" aria-hidden="true" />
-              Reply
+              <ThumbsUp
+                className="h-3.5 w-3.5"
+                fill={comment.myVote === 1 ? "currentColor" : "none"}
+              />
+              {comment.likeCount ?? 0}
             </button>
-          )}
+            <button
+              type="button"
+              disabled={!isLoggedIn}
+              onClick={() => onVote(comment.id, "dislike")}
+              className={`inline-flex cursor-pointer items-center gap-1 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                comment.myVote === -1
+                  ? "text-primary"
+                  : "text-muted-text hover:text-primary"
+              }`}
+            >
+              <ThumbsDown
+                className="h-3.5 w-3.5"
+                fill={comment.myVote === -1 ? "currentColor" : "none"}
+              />
+              {comment.dislikeCount ?? 0}
+            </button>
+            {canReply && !isReplying && (
+              <button
+                type="button"
+                onClick={() => setIsReplying(true)}
+                className="inline-flex cursor-pointer items-center gap-1.5 text-xs font-medium text-muted-text transition-colors hover:text-primary"
+              >
+                <MessageSquareReply
+                  className="h-3.5 w-3.5"
+                  aria-hidden="true"
+                />
+                Reply
+              </button>
+            )}
+          </div>
         </div>
       </article>
 
@@ -153,6 +195,7 @@ export default function CommentBody({
             comment={reply}
             isLoggedIn={isLoggedIn}
             onReply={onReply}
+            onVote={onVote}
           />
         </div>
       ))}
